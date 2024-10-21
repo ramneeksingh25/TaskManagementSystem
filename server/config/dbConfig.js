@@ -1,7 +1,7 @@
 module.exports = {
     HOST: 'localhost',
     USER: 'root',
-    PASSWORD: '',
+    PASSWORD: 'appleramneek',
     DB: 'task_management_system',
     dialect: 'mysql',
 
