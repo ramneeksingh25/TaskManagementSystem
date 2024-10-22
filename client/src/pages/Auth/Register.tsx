@@ -23,13 +23,16 @@ const Register = () => {
 		try {
 			// Registration API call
 			const response = await registerUser(data);
-			setMessage({ error: false, message: "Registration successful!" });
-			
-			// Automatic login after registration
-			const loginData = { email: data.email, password: data.password };
-			await loginUser(loginData);
-
-			reset(); // Reset form after successful registration
+			if (response.data) {
+				setMessage({ error: false, message: "Registration successful!" });
+				const loginData = { email: data.email, password: data.password };
+				await loginUser(loginData);
+			}
+			else {
+				setMessage({ error: true, message: "Registration failed. User already exists." });
+				reset();
+			}
+			reset(); 
 		} catch (error: unknown) {
 			setMessage({
 				error: true,
