@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../models'); // Sequelize User model
 
-const User = db.users;
+const User = db.User;
 const dotenv = require("dotenv")
 
 dotenv.config();
@@ -61,7 +61,7 @@ exports.loginUser = async (req, res) => {
     console.log("JWTJWTJWT:",JWT_SECRET);
     
     // Generate JWT token
-    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
     console.log("Generated Token:", token); // Log the generated token for debugging
 
     res.status(200).json({ message: 'Login successful', token });
