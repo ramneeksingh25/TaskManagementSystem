@@ -1,20 +1,44 @@
-import { useState } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import Home from "./pages/Home/index.tsx"
-import Login from "./pages/Login/index.tsx"
-import Register from './pages/Register/index.tsx'
-import NotFound from "./pages/NotFound.tsx"
+import { Navigate, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home/index.tsx";
+import Login from "./pages/Auth/Login.tsx";
+import Register from "./pages/Auth/Register.tsx";
+import NotFound from "./pages/NotFound.tsx";
 
 const App = () => {
-  const [isAuthenticated,setIsAuthenticated] =useState(false);
-  return (
-    <Routes>
-      <Route path="/" element={isAuthenticated?<Home />:<Navigate to={"/signin"}/>} />  
-      <Route path="/signup" element={<Register />} />
-      <Route path="/signin" element={<Login />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  )
-}
+	return (
+		<Routes>
+			<Route
+				path="/"
+				element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>  
+      }
+			/>
+			<Route
+				path="/signup"
+				element={<Register />}
+			/>
+			<Route
+				path="/signin"
+				element={<Login />}
+			/>
+			<Route
+				path="*"
+				element={<NotFound />}
+			/>
+		</Routes>
+	);
+};
 
-export default App
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+	const token = localStorage.getItem("token");
+
+	if (!token) {
+		return <Navigate to="/signin" />;
+	}
+
+	return children;
+};
+
+export default App;

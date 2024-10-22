@@ -1,114 +1,120 @@
-import { Link } from "react-router-dom";
-import { FieldErrors, SubmitHandler, useForm, UseFormRegister } from "react-hook-form";
-import { labelStyle, inputStyle } from "./formStyles";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
+import { loginUser } from "../../api"; // Import API to log in
 
-interface LoginDetails {
-  email: string;
-  password: string;
+export interface LoginDetails {
+	email: string;
+	password: string;
 }
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<LoginDetails>();
+	const { register, handleSubmit, formState: { errors }, reset } = useForm<LoginDetails>();
+	const [responseMessage, setMessage] = useState({ error: false, message: "" });
+	const [loading, setLoading] = useState<boolean>(false);
+	const navigate = useNavigate();
 
-  const onSubmit = (data: LoginDetails) => {
-    console.log("Login successful!", data);
-    // Add your login logic here (e.g., API call)
-    reset(); // Reset form after successful login
-  };
+	// Handle login form submission
+	const onSubmit = async (data: LoginDetails) => {
+		setLoading(true);
+		try {
+			// Login API call
+			const response = await loginUser(data);
 
-  return (
-    <div className="bg-black h-screen w-screen grid place-items-center gap-0 text-white">
-      <LoginForm
-        register={register}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-      />
-    </div>
-  );
-};
+			// Store the JWT token in localStorage
+			const token = response.data.token;
+			localStorage.setItem('token', token);
 
-interface LoginFormProps {
-  register:UseFormRegister<LoginDetails>
-  handleSubmit: (callback: (data: LoginDetails) => void) => (
-    event?: React.FormEvent<HTMLFormElement>
-  ) => Promise<void>;
-  onSubmit: SubmitHandler<LoginDetails>;
-  errors: FieldErrors<LoginDetails>;
-}
+			setMessage({ error: false, message: "Login successful!" });
+			reset(); // Reset form fields after successful login
+			navigate("/"); // Redirect to the home route
+		} catch (error: unknown) {
+			setMessage({
+				error: true,
+				message: (error as Error)?.message || "Login failed. Please try again.",
+			});
+		} finally {
+			setLoading(false);
+		}
+	};
 
-const LoginForm: React.FC<LoginFormProps> = ({
-  register,
-  handleSubmit,
-  onSubmit,
-  errors,
-}) => {
-  return (
-    <form
-      className="bg-gray-300/10 px-20 py-12 flex flex-col items-center justify-center"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <label className="text-2xl font-bold mb-3">Login</label>
-      <div className="relative z-0 w-full mb-10 group">
-        <input
-          type="email"
-          {...register("email", {
-            required: "Email is required",
-            pattern: {
-              value: /^[^@\s]+@[^@\s]+\.[^@\s]+$/,
-              message: "Email is not valid",
-            },
-          })}
-          className={inputStyle("blue")}
-          placeholder=" "
-        />
-        <label htmlFor="floating_email" className={labelStyle}>
-          Email address
-        </label>
-        {errors.email && (
-          <span className="text-red-500 text-xs">{errors.email.message}</span>
-        )}
-      </div>
-      <div className="relative z-0 w-full mb-10 group">
-        <input
-          type="password"
-          {...register("password", {
-            required: "Password is required",
-            minLength: {
-              value: 6,
-              message: "Password must be at least 6 characters long",
-            },
-          })}
-          className={inputStyle("blue")}
-          placeholder=" "
-        />
-        <label htmlFor="floating_password" className={labelStyle}>
-          Password
-        </label>
-        {errors.password && (
-          <span className="text-red-500 text-xs">{errors.password.message}</span>
-        )}
-      </div>
+	return (
+		<div className="bg-black h-screen w-screen grid place-items-center gap-0 text-white">
+			<form
+				className="row-span-2 bg-gray-300/10 px-20 py-12 flex flex-col items-center justify-center"
+				onSubmit={handleSubmit(onSubmit)}>
+				<label className="text-2xl font-bold mb-3">Login</label>
 
-      <button
-        type="submit"
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-5"
-      >
-        Login
-      </button>
-      <span className="text-center font-light">
-        New Here?{" "}
-        <Link to={"/signup"} className="font-bold hover:underline">
-          Register
-        </Link>
-      </span>
-    </form>
-  );
+				{/* Email Input */}
+				<div className="relative z-0 w-full mb-10 group">
+					<input
+						type="email"
+						{...register("email", {
+							required: "Email is required",
+							pattern: {
+								value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+								message: "Invalid email format",
+							},
+						})}
+						className={inputStyle(errors.email)}
+						placeholder=" "
+					/>
+					<label htmlFor="email" className={labelStyle}>
+						Email address
+					</label>
+					{errors.email && (
+						<span className="text-red-500 text-xs">{errors.email.message}</span>
+					)}
+				</div>
+
+				{/* Password Input */}
+				<div className="relative z-0 w-full mb-10 group">
+					<input
+						type="password"
+						{...register("password", {
+							required: "Password is required",
+							minLength: {
+								value: 6,
+								message: "Password must be at least 6 characters",
+							},
+						})}
+						className={inputStyle(errors.password)}
+						placeholder=" "
+					/>
+					<label htmlFor="password" className={labelStyle}>
+						Password
+					</label>
+					{errors.password && (
+						<span className="text-red-500 text-xs">{errors.password.message}</span>
+					)}
+				</div>
+
+				{/* Response Message */}
+				{responseMessage.message && (
+					<p className={`${responseMessage.error ? "text-red-500" : "text-green-500"}`}>
+						{responseMessage.message}
+					</p>
+				)}
+
+				{/* Login Button */}
+				<button
+					type="submit"
+					className={buttonStyle}
+					disabled={loading}>
+					<span className="relative z-10">{loading ? "Logging in..." : "Login"}</span>
+				</button>
+
+				{/* Register Link */}
+				<span className="text-center font-light">
+					Don't have an account?{" "}
+					<Link to={"/register"} className="font-bold">
+						Register
+					</Link>
+				</span>
+			</form>
+		</div>
+	);
 };
 
 export default Login;

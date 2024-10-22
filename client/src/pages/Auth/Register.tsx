@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
+import { loginUser, registerUser } from "../../api";
 
-// Define the interface for registration details
-interface RegisterDetails {
+export interface RegisterDetails {
 	name: string;
 	email: string;
 	password: string;
@@ -16,13 +18,33 @@ const Register = () => {
 		handleSubmit,
 		formState: { errors },
 		reset,
-    watch
+		watch,
 	} = useForm<RegisterDetails>();
 
-	const onSubmit = (data: RegisterDetails) => {
-		console.log("Registration successful!", data);
-		// Here you can add your registration logic (e.g., API call)
-		reset(); // Clear form after successful registration
+	const [responseMessage, setMessage] = useState({ error: false, message: "" });
+	const [loading, setLoading] = useState<boolean>(false);
+
+	// Handle registration and automatic login
+	const onSubmit = async (data: RegisterDetails) => {
+		setLoading(true);
+		try {
+			// Registration API call
+			const response = await registerUser(data);
+			setMessage({ error: false, message: "Registration successful!" });
+			
+			// Automatic login after registration
+			const loginData = { email: data.email, password: data.password };
+			await loginUser(loginData);
+
+			reset(); // Reset form after successful registration
+		} catch (error: unknown) {
+			setMessage({
+				error: true,
+				message: (error as Error)?.message || "Registration failed. Please try again.",
+			});
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -32,24 +54,21 @@ const Register = () => {
 				onSubmit={handleSubmit(onSubmit)}>
 				<label className="text-2xl font-bold mb-3">Register</label>
 
+				{/* Name Input */}
 				<div className="relative z-0 w-full mb-10 group">
 					<input
 						type="text"
 						{...register("name", {
 							required: "Name is required",
 							pattern: {
-								value: /^[^\d].*$/, // Regex to ensure the name does not start with a number
+								value: /^[^\d].*$/,
 								message: "Name cannot start with a number",
 							},
 						})}
-						className={`block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 ${
-							errors.name ? "border-red-500" : "border-gray-300"
-						} appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
+						className={inputStyle(errors.name)}
 						placeholder=" "
 					/>
-					<label
-						htmlFor="name"
-						className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+					<label htmlFor="name" className={labelStyle}>
 						Name
 					</label>
 					{errors.name && (
@@ -57,6 +76,7 @@ const Register = () => {
 					)}
 				</div>
 
+				{/* Email Input */}
 				<div className="relative z-0 w-full mb-10 group">
 					<input
 						type="email"
@@ -67,14 +87,10 @@ const Register = () => {
 								message: "Invalid email format",
 							},
 						})}
-						className={`block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 ${
-							errors.email ? "border-red-500" : "border-gray-300"
-						} appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
+						className={inputStyle(errors.email)}
 						placeholder=" "
 					/>
-					<label
-						htmlFor="email"
-						className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+					<label htmlFor="email" className={labelStyle}>
 						Email address
 					</label>
 					{errors.email && (
@@ -82,6 +98,7 @@ const Register = () => {
 					)}
 				</div>
 
+				{/* Password Input */}
 				<div className="relative z-0 w-full mb-10 group">
 					<input
 						type="password"
@@ -92,62 +109,62 @@ const Register = () => {
 								message: "Password must be at least 6 characters",
 							},
 						})}
-						className={`block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 ${
-							errors.password ? "border-red-500" : "border-gray-300"
-						} appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
+						className={inputStyle(errors.password)}
 						placeholder=" "
 					/>
-					<label
-						htmlFor="password"
-						className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+					<label htmlFor="password" className={labelStyle}>
 						Password
 					</label>
 					{errors.password && (
+						<span className="text-red-500 text-xs">{errors.password.message}</span>
+					)}
+				</div>
+
+				{/* Confirm Password Input */}
+				<div className="relative z-0 w-full mb-10 group">
+					<input
+						type="password"
+						{...register("confirmPassword", {
+							required: "Confirm Password is required",
+							validate: (value) =>
+								value === watch("password") || "Passwords do not match",
+						})}
+						className={inputStyle(errors.confirmPassword)}
+						placeholder=" "
+					/>
+					<label htmlFor="confirmPassword" className={labelStyle}>
+						Confirm Password
+					</label>
+					{errors.confirmPassword && (
 						<span className="text-red-500 text-xs">
-							{errors.password.message}
+							{errors.confirmPassword.message}
 						</span>
 					)}
 				</div>
 
-				<div className="relative z-0 w-full mb-10 group">
-          <input
-            type="password"
-            {...register("confirmPassword", {
-              required: "Confirm Password is required",
-              validate: (value) =>
-                value === watch("password") || "Passwords do not match", // Validate against the password field
-            })}
-            className={`block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 ${
-              errors.confirmPassword ? "border-red-500" : "border-gray-300"
-            } appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
-            placeholder=" "
-          />
-          <label
-            htmlFor="confirmPassword"
-            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Confirm Password
-          </label>
-          {errors.confirmPassword && (
-            <span className="text-red-500 text-xs">
-              {errors.confirmPassword.message}
-            </span>
-          )}
-        </div>
+				{/* Response Message */}
+				{responseMessage.message && (
+					<p className={`${responseMessage.error ? "text-red-500" : "text-green-500"}`}>
+						{responseMessage.message}
+					</p>
+				)}
 
-
+				{/* Register Button */}
 				<button
 					type="submit"
-					className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-5">
-					Register
+					className={buttonStyle}
+					disabled={loading}>
+					<span className="relative z-10">
+						{loading ? "Registering..." : "Register"}
+					</span>
 				</button>
+
+				{/* Login Link */}
 				<span className="text-center font-light">
 					Already have an account?{" "}
-					<Link
-						to={"/signin"}
-						className="font-bold">
+					<Link to={"/signin"} className="font-bold">
 						Login
-					</Link>{" "}
+					</Link>
 				</span>
 			</form>
 		</div>
