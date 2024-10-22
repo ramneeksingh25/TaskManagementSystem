@@ -10,3 +10,10 @@ export interface RegisterDetails {
 	confirmPassword: string;
 	role: string;
 }
+
+export interface DecodedToken {
+	exp: number; 
+	iat: number;  
+	id: number;
+	role: string;
+  }

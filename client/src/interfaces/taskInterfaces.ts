@@ -6,7 +6,6 @@ export interface TaskData {
     priority?: string; // Optional field
     status?: 'To Do' | 'In Progress' | 'Completed'; // You can extend the statuses as needed
     isMultiUser?: boolean; // Optional field
-    creatorId: number; // The ID of the user who created the task
   }
   
   // Optionally, if you want to include the relationships:

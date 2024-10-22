@@ -1,14 +1,20 @@
 import { useNavigate } from "react-router-dom";
+import { logoutButtonStyle } from "./formStyles";
+import { HiOutlineLogout } from "react-icons/hi";
 
 const Logout = () => {
 	const navigate = useNavigate();
 
 	const handleLogout = () => {
-		localStorage.removeItem("token"); // Clear the token
-		navigate("/signin"); // Redirect to login page
+		localStorage.removeItem("token");
+		navigate("/signin"); 
 	};
 
-	return <button onClick={handleLogout}>Log Out</button>;
+	return <button onClick={handleLogout} className={logoutButtonStyle}>
+	<span className="relative z-10 flex items-center gap-2">
+		Log Out <HiOutlineLogout />
+	</span>
+	</button>;
 };
 
 export default Logout;
