@@ -3,14 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
 import { loginUser, registerUser } from "../../api";
-
-export interface RegisterDetails {
-	name: string;
-	email: string;
-	password: string;
-	confirmPassword: string;
-	role: string;
-}
+import { RegisterDetails } from "../../interfaces/authInterfaces";
 
 const Register = () => {
 	const {
