@@ -5,7 +5,7 @@ import { updateTask } from '../../../api';
 
 interface TaskDetailProps {
   task: Task;
-  onClose: () => void; // Function to close the detail view
+  onClose: () => void;
 }
 
 const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
