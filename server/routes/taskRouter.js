@@ -7,7 +7,9 @@ const authorizeAdmin=auth.authorizeAdmin;
 
 router.post('/create', authenticateJWT, taskController.createTask);
 
-router.get('/my-tasks', authenticateJWT, taskController.getTasksForUser);
+router.get('/my-tasks', authenticateJWT, taskController.getTasksAssignedToUser);
+
+router.get('/assigned-tasks', authenticateJWT, taskController.getTasksAssignedByUser);
 
 router.get('/:id', authenticateJWT, taskController.getTaskById);
 

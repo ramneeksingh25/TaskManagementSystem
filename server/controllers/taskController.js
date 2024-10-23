@@ -34,17 +34,14 @@ exports.createTask = async (req, res) => {
   }
 };
 
-exports.getTasksForUser = async (req, res) => {
+exports.getTasksAssignedByUser = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log("Fetching tasks for User ID:", userId);
+    console.log("Fetching tasks assigned by User ID:", userId);
 
     const tasks = await Task.findAll({
       where: {
-        [db.Sequelize.Op.or]: [
-          { creatorId: userId },
-          { '$assignees.id$': userId }
-        ]
+        creatorId: userId
       },
       include: [
         { model: User, as: 'creator', attributes: ['name', 'email'] },
@@ -54,7 +51,29 @@ exports.getTasksForUser = async (req, res) => {
 
     res.status(200).json({ tasks });
   } catch (error) {
-    console.error("Error fetching tasks:", error);
+    console.error("Error fetching tasks assigned by user:", error);
+    res.status(500).json({ message: 'Error fetching tasks', error: error.message });
+  }
+};
+
+exports.getTasksAssignedToUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log("Fetching tasks assigned to User ID:", userId);
+
+    const tasks = await Task.findAll({
+      where: {
+        '$assignees.id$': userId
+      },
+      include: [
+        { model: User, as: 'creator', attributes: ['name', 'email'] },
+        { model: User, as: 'assignees', attributes: ['name', 'email'] }
+      ]
+    });
+
+    res.status(200).json({ tasks });
+  } catch (error) {
+    console.error("Error fetching tasks assigned to user:", error);
     res.status(500).json({ message: 'Error fetching tasks', error: error.message });
   }
 };
