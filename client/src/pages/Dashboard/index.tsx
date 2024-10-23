@@ -1,26 +1,28 @@
-import { useEffect } from "react";
+
 import Logout from "../Auth/Logout";
-import { getTasksForUser } from "../../api";
+import AssignedTaskList from "./AssignedTaskList";
 import CreateTask from "./CreateTask";
+import TaskList from "./TaskList";
 
 const Home = () => {
-	const fetchTasks = async () => {
-		const response = await getTasksForUser();
-		console.log(response);
-	};
-	useEffect(() => {
-		fetchTasks();
-	}, []);
+	
 	return (
-		<div className="h-screen grid grid-rows-3">
-			<Logout />
+		<div className="h-[100vh] grid grid-rows-12">
 			<Header />
+			<div className="row-span-5 p-32">
+				My Tasks:
+                <TaskList />
+            </div>
+			<div className="row-span-5 p-32">
+				Assigned Tasks:
+                <AssignedTaskList />
+            </div>
 		</div>
 	);
 };
 
 const Header = () => (
-	<div className="bg-green-500 row-span-2">
+	<div className="bg-yellow-500 row-span-1 flex items-center justify-between px-32">
 		<CreateTask />
 		<Logout />
 	</div>

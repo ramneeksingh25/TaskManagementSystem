@@ -1,11 +1,11 @@
-// AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { DecodedToken } from "../interfaces/authInterfaces";
+import { DecodedToken } from "../interfaces/interfaces";
+
 
 interface AuthContextType {
-	user: DecodedToken; // Replace `any` with a specific user type if you have one
-	setUser: (user: DecodedToken) => void; // Update this to the specific type
+	user: DecodedToken; 
+	setUser: (user: DecodedToken) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
-			const decodedToken = jwtDecode<DecodedToken>(token); // Use your custom interface here
+			const decodedToken = jwtDecode<DecodedToken>(token);
 			setUser(decodedToken);
 		}
 	}, []);

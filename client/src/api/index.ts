@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios, { AxiosError } from 'axios';
 
-import { TaskData } from '../interfaces/taskInterfaces';
-import { LoginDetails, RegisterDetails } from '../interfaces/authInterfaces';
+import { LoginDetails, RegisterDetails, TaskData, TaskDataWithRelationships } from '../interfaces/interfaces';
+
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -70,7 +70,7 @@ export const loginUser = async (userData: LoginDetails) => {
 
 export const getAllUsers = async () => {
   try {
-    const response = await apiClient.get('/users'); // Adjust the endpoint as needed
+    const response = await apiClient.get('/users/users'); // Adjust the endpoint as needed
     return response.data.users;
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
@@ -104,9 +104,10 @@ export const getUserProfile = async () => {
 };
 
 
-export const createTask = async (taskData:TaskData) => {
+export const createTask = async (taskData:TaskDataWithRelationships) => {
   try {
-    const response = await apiClient.post('/tasks', taskData);
+    console.log(taskData);
+    const response = await apiClient.post('/tasks/create', taskData);
     return response.data;
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
@@ -121,10 +122,11 @@ export const createTask = async (taskData:TaskData) => {
   }
 };
 
-// Function to fetch tasks for the authenticated user
 export const getTasksForUser = async () => {
   try {
-    const response = await apiClient.get('/tasks/user');
+    const response = await apiClient.get('/tasks/my-tasks');
+    console.log("TASK DATA: " , response.data);
+    
     return response.data.tasks;
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
@@ -139,7 +141,26 @@ export const getTasksForUser = async () => {
   }
 };
 
-// Function to update a task by ID
+export const getTasksByUser = async () => {
+  try {
+    // Making a GET request to the /tasks/assigned-tasks route
+    const response = await apiClient.get('/tasks/assigned-tasks');
+    console.log("ASSIGNED TASKS DATA:", response.data);
+    
+    return response.data.tasks;
+  } catch (error: AxiosError | unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error('Failed to fetch assigned tasks.');
+      }
+    } else {
+      throw new Error('An unknown error occurred.');
+    }
+  }
+};
+
 export const updateTask = async (taskId: string, updatedData: TaskData) => {
   try {
     const response = await apiClient.put(`/tasks/${taskId}`, updatedData);
@@ -157,7 +178,6 @@ export const updateTask = async (taskId: string, updatedData: TaskData) => {
   }
 };
 
-// Function to delete a task by ID
 export const deleteTask = async (taskId:string) => {
   try {
     const response = await apiClient.delete(`/tasks/${taskId}`);
@@ -175,7 +195,6 @@ export const deleteTask = async (taskId:string) => {
   }
 };
 
-// Function to get a task by ID
 export const getTaskById = async (taskId:string) => {
   try {
     const response = await apiClient.get(`/tasks/${taskId}`);

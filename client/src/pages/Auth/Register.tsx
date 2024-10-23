@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
 import { loginUser, registerUser } from "../../api";
-import { RegisterDetails } from "../../interfaces/authInterfaces";
+import { RegisterDetails } from "../../interfaces/interfaces";
+
 
 const Register = () => {
 	const {

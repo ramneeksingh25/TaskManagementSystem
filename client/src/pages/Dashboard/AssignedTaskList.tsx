@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { getTasksForUser } from "../../api";
+import { getTasksByUser } from "../../api";
 import TaskItem from "./TaskItem";
-
-const TaskList = () => {
+const AssignedTaskList = () => {
 	const [tasks, setTasks] = useState([]);
 	useEffect(() => {
 		const fetchTasks = async () => {
-			const response = await getTasksForUser();
+			const response = await getTasksByUser();
 			setTasks(response);
 		};
 		fetchTasks();
 	}, []);
 	return (
-		<div className="bg-black top-10 w-full grid grid-cols-3 gap-3 h-full overflow-scroll">
+		<div className="bg-black top-10 w-full gap-3 h-full overflow-scroll">
 			{tasks.map((task, index) => (
 				<div key={index}>
 					<TaskItem task={task} />
@@ -22,4 +21,4 @@ const TaskList = () => {
 	);
 };
 
-export default TaskList;
+export default AssignedTaskList;

@@ -6,8 +6,9 @@ const UserTask = db.UserTask;
 // Create a new task
 exports.createTask = async (req, res) => {
   try {
-    const { name, description, dueDate, priority, assigneeIds, isMultiUser } = req.body; // Now handling multiple assignees
+    const { name, description, dueDate, priority, assigneeIds } = req.body;
     const creatorId = req.user.id; 
+    const isMultiUser = assigneeIds && assigneeIds.length > 1;
 
     const assignees = await User.findAll({ where: { id: assigneeIds } });
     if (assignees.length !== assigneeIds.length) {

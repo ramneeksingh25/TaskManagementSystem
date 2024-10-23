@@ -15,7 +15,7 @@ const CreateTask = () => {
 			{dialogOpen && (
 				<>
 					<div
-						className="absolute h-screen w-screen bg-black/70 top-0 z-30"
+						className="absolute h-screen w-screen bg-black/70 top-0 left-0 z-30"
 						onClick={() => setDialogOpen(false)}
 					></div>
 					<div className="absolute bg-white border-black z-40 w-[50vw] -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 p-4 rounded-lg shadow-lg">
@@ -78,7 +78,9 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		await createTask({ ...taskData, dueDate: new Date(taskData.dueDate) });
+		const createdTask = { ...taskData, dueDate: new Date(taskData.dueDate) }
+		console.log(createdTask);
+		await createTask(createdTask);
 		onClose();
 	};
 
