@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createTask, getAllUsers } from "../../api";
 import { buttonStyle } from "../Auth/formStyles";
+import { jwtDecode } from "jwt-decode";
 
 const CreateTask = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
@@ -51,17 +52,24 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 
 	useEffect(() => {
 		const fetchUsers = async () => {
-			try {
-				const response = await getAllUsers();
-				setUsers(response);
-			} catch (error) {
-				console.error("Error fetching users:", error);
-			} finally {
-				setLoading(false);
+		  try {
+			const response = await getAllUsers();
+			const token = localStorage.getItem("token"); 			
+			if (token) {
+			  const decodedToken = jwtDecode<User>(token);
+			  const currentUserId = decodedToken.id;
+			  const filteredUsers = response.filter((user:User) => user.id !== currentUserId);
+			  setUsers(filteredUsers);
 			}
+		  } catch (error) {
+			console.error("Error fetching users:", error);
+		  } finally {
+			setLoading(false);
+		  }
 		};
+	
 		fetchUsers();
-	}, []);
+	  }, []);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;

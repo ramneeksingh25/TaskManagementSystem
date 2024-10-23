@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
 import { loginUser, registerUser } from "../../api";
 import { RegisterDetails } from "../../interfaces/interfaces";
@@ -18,6 +18,7 @@ const Register = () => {
 	const [responseMessage, setMessage] = useState({ error: false, message: "" });
 	const [loading, setLoading] = useState<boolean>(false);
 
+	const navigate = useNavigate();
 	// Handle registration and automatic login
 	const onSubmit = async (data: RegisterDetails) => {
 		setLoading(true);
@@ -28,6 +29,7 @@ const Register = () => {
 				setMessage({ error: false, message: "Registration successful!" });
 				const loginData = { email: data.email, password: data.password };
 				await loginUser(loginData);
+				navigate("/")
 			}
 			else {
 				setMessage({ error: true, message: "Registration failed. User already exists." });
@@ -43,6 +45,12 @@ const Register = () => {
 			setLoading(false);
 		}
 	};
+	useEffect(()=>{
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate("/");
+        }
+	},[])
 
 	return (
 		<div className="bg-black h-screen w-screen grid place-items-center gap-0 text-white">

@@ -8,6 +8,12 @@ export interface User {
   email: string;
 }
 
+export interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+}
+
 export interface RegisterDetails {
 	name: string;
 	email: string;

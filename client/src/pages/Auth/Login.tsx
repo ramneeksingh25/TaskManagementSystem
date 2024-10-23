@@ -19,8 +19,8 @@ const Login = () => {
 			const token = response.data.token;
 			localStorage.setItem('token', token);
 			setMessage({ error: false, message: "Login successful!" });
-			reset(); 
-
+			reset();
+			navigate("/"); 
 		} catch (error: unknown) {
 			setMessage({
 				error: true,
@@ -35,7 +35,7 @@ const Login = () => {
 		if (token) {
 			navigate("/");
 		}
-	}, [navigate]);
+	}, []);
 
 	return (
 		<div className="bg-black h-screen w-screen grid place-items-center gap-0 text-white">

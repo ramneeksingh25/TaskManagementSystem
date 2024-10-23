@@ -2,6 +2,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { LoginDetails, RegisterDetails, TaskData, TaskDataWithRelationships } from '../interfaces/interfaces';
+import { useNavigate } from 'react-router-dom';
 
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
@@ -27,7 +28,7 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Register user API call
+
 export const registerUser = async (userData: RegisterDetails) => {
   try {
     const response = await apiClient.post('/users/register', userData);
@@ -45,15 +46,11 @@ export const registerUser = async (userData: RegisterDetails) => {
   }
 };
 
-// Login user API call
 export const loginUser = async (userData: LoginDetails) => {
   try {
     const response = await apiClient.post('/users/login', userData);
-
-    // Store the JWT token in localStorage upon successful login
     const token = response.data.token;
     localStorage.setItem('token', token);
-
     return response;
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
@@ -70,7 +67,7 @@ export const loginUser = async (userData: LoginDetails) => {
 
 export const getAllUsers = async () => {
   try {
-    const response = await apiClient.get('/users/users'); // Adjust the endpoint as needed
+    const response = await apiClient.get('/users/users');
     return response.data.users;
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
@@ -85,10 +82,9 @@ export const getAllUsers = async () => {
   }
 };
 
-// Function to fetch the logged-in user's profile
 export const getUserProfile = async () => {
   try {
-    const response = await apiClient.get('/users/profile'); // Adjust the endpoint as needed
+    const response = await apiClient.get('/users/profile');
     return response.data.user;
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
@@ -102,7 +98,6 @@ export const getUserProfile = async () => {
     }
   }
 };
-
 
 export const createTask = async (taskData:TaskDataWithRelationships) => {
   try {
@@ -125,8 +120,6 @@ export const createTask = async (taskData:TaskDataWithRelationships) => {
 export const getTasksForUser = async () => {
   try {
     const response = await apiClient.get('/tasks/my-tasks');
-    console.log("TASK DATA: " , response.data);
-    
     return response.data.tasks;
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
@@ -143,7 +136,6 @@ export const getTasksForUser = async () => {
 
 export const getTasksByUser = async () => {
   try {
-    // Making a GET request to the /tasks/assigned-tasks route
     const response = await apiClient.get('/tasks/assigned-tasks');
     console.log("ASSIGNED TASKS DATA:", response.data);
     
@@ -195,19 +187,19 @@ export const deleteTask = async (taskId:string) => {
   }
 };
 
-export const getTaskById = async (taskId:string) => {
-  try {
-    const response = await apiClient.get(`/tasks/${taskId}`);
-    return response.data.task;
-  } catch (error: AxiosError | unknown) {
-    if (axios.isAxiosError(error)) {
-      if (error.response && error.response.data.message) {
-        throw new Error(error.response.data.message);
-      } else {
-        throw new Error('Failed to fetch task details.');
-      }
-    } else {
-      throw new Error('An unknown error occurred.');
-    }
-  }
-};
+// export const getTaskById = async (taskId:string) => {
+//   try {
+//     const response = await apiClient.get(`/tasks/${taskId}`);
+//     return response.data.task;
+//   } catch (error: AxiosError | unknown) {
+//     if (axios.isAxiosError(error)) {
+//       if (error.response && error.response.data.message) {
+//         throw new Error(error.response.data.message);
+//       } else {
+//         throw new Error('Failed to fetch task details.');
+//       }
+//     } else {
+//       throw new Error('An unknown error occurred.');
+//     }
+//   }
+// };

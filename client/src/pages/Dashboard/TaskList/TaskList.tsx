@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { getTasksByUser, getTasksForUser } from "../../api";
-import TaskItem from "./TaskItem";
+import { getTasksByUser, getTasksForUser } from "../../../api";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
-
+import TaskItem from "./TaskItem";
 interface TaskListProps {
   myTask: boolean;
 }
@@ -14,6 +13,7 @@ const TaskList = ({ myTask }: TaskListProps) => {
 
   useEffect(() => {
     const fetchTasks = async () => {
+      setSortBy("")
       try {
         const response = myTask ? await getTasksForUser() : await getTasksByUser();
         setTasks(response);
@@ -21,10 +21,8 @@ const TaskList = ({ myTask }: TaskListProps) => {
         console.error("Error fetching tasks:", error);
       }
     };
-
     fetchTasks();
   }, [myTask]);
-
   const handleSort = (sortField: string) => {
     const sortableFields = ["name", "priority", "status", "dueDate"];
     if (!sortableFields.includes(sortField)) return;
