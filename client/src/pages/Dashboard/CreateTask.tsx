@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createTask, getAllUsers } from "../../api";
+import { buttonStyle } from "../Auth/formStyles";
 
 const CreateTask = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
@@ -7,9 +8,10 @@ const CreateTask = () => {
 	return (
 		<>
 			<div
-				className="bg-blue-500 hover:bg-blue-400 transition-all duration-150 cursor-pointer text-gray-800 hover:font-extrabold inline-block px-3 py-2 rounded-full"
+				className={buttonStyle}
 				onClick={() => setDialogOpen(true)}
 			>
+				<span className="relative z-10"></span>
 				Create Task
 			</div>
 			{dialogOpen && (

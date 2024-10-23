@@ -10,7 +10,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Task>({
     ...task,
-    dueDate:task.dueDate,
+    dueDate: task.dueDate,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -35,8 +35,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
     }
   };
 
+  const formatDate = (date: string | Date) => {
+    return new Date(date).toLocaleDateString();
+  };
+
   return (
-    <div className="border rounded-lg p-4 mb-4 bg-white shadow-md ">
+    <div className="border rounded-lg px-4 bg-white shadow-md">
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -67,7 +71,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             <input
               type="date"
               name="dueDate"
-              value={formData.dueDate} // Format Date object to YYYY-MM-DD
+              value={formData.dueDate}
               onChange={handleChange}
               className="border p-2 w-full"
               required
@@ -118,26 +122,19 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
           </div>
         </form>
       ) : (
-        <div>
-          <h3 className="text-lg font-bold">{task.name}</h3>
-          <p><strong>Description:</strong> {task.description}</p>
-          <p><strong>Due Date:</strong> {new Date(task.dueDate).toLocaleDateString()}</p>
-          <p><strong>Priority:</strong> {task.priority}</p>
-          <p><strong>Status:</strong> {task.status}</p>
-          <p><strong>Created At:</strong> {new Date(task.createdAt).toLocaleString()}</p>
-          <p><strong>Updated At:</strong> {new Date(task.updatedAt).toLocaleString()}</p>
-          <p><strong>Creator:</strong> {task.creator.name} (Email: {task.creator.email})</p>
-          <div>
-            <strong>Assignees:</strong>
-            <ul>
-              {task.assignees.map((assignee, index) => (
-                <li key={index}>{assignee.name} (Email: {assignee.email})</li>
-              ))}
-            </ul>
-          </div>
-          <button onClick={() => setIsEditing(true)} className="mt-2 bg-yellow-500 text-white px-3 py-1 rounded">
-            Edit Task
-          </button>
+        <div className="col-span-11 grid grid-cols-10 h-10 items-center whitespace-nowrap">
+          <span className="text-ellipsis overflow-hidden font-bold">{task.name}</span>
+          <span className="text-ellipsis overflow-hidden col-span-2">{task.description}</span>
+          <span className="text-ellipsis overflow-hidden">{task.priority}</span>
+          <span className="text-ellipsis overflow-hidden">{task.status}</span>
+          <span className="text-ellipsis overflow-hidden">{formatDate(task.dueDate)}</span>
+          <span className="text-ellipsis overflow-hidden">{formatDate(task.createdAt)}</span>
+          <span className="text-ellipsis overflow-hidden">{task.creator.name}</span>
+          <span className="text-ellipsis overflow-hidden col-span-2">
+            {task.assignees.length > 0
+              ? task.assignees.map((assignee, index) => `${assignee.name}${index === task.assignees.length - 1 ? "" : ", "}`)
+              : "No Assignees"}
+          </span>
         </div>
       )}
     </div>
