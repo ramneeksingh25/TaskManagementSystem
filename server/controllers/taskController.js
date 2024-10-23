@@ -1,10 +1,10 @@
+const { io } = require('../index');
 const db = require('../models');
 const User = db.User;
 const Task = db.Task;
-const UserTask = db.UserTask;
 
-// Create a new task
-exports.createTask = async (req, res) => {
+
+exports.createTask = async (req, res, io) => {
   try {
     const { name, description, dueDate, priority, assigneeIds } = req.body;
     const creatorId = req.user.id; 
@@ -28,6 +28,9 @@ exports.createTask = async (req, res) => {
     if (isMultiUser) {
       await newTask.setAssignees(assignees); 
     }
+    
+    io.emit('newTask', newTask);
+
     res.status(201).json({ message: 'Task created successfully', task: newTask });
   } catch (error) {
     console.error("Error creating task:", error); // Log the error
@@ -38,8 +41,6 @@ exports.createTask = async (req, res) => {
 exports.getTasksAssignedByUser = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log("Fetching tasks assigned by User ID:", userId);
-
     const tasks = await Task.findAll({
       where: {
         creatorId: userId
@@ -60,8 +61,6 @@ exports.getTasksAssignedByUser = async (req, res) => {
 exports.getTasksAssignedToUser = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log("Fetching tasks assigned to User ID:", userId);
-
     const tasks = await Task.findAll({
       where: {
         '$assignees.id$': userId
@@ -71,7 +70,6 @@ exports.getTasksAssignedToUser = async (req, res) => {
         { model: User, as: 'assignees', attributes: ['name', 'email'] }
       ]
     });
-
     res.status(200).json({ tasks });
   } catch (error) {
     console.error("Error fetching tasks assigned to user:", error);

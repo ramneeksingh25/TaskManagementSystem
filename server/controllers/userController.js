@@ -7,13 +7,8 @@ const dotenv = require("dotenv")
 
 dotenv.config();
 
-// JWT Secret Key
 const JWT_SECRET = process.env.JWT_SECRET;
 
-console.log("JWT:"+JWT_SECRET);
-
-
-// Register a new user
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password,role } = req.body;
@@ -38,7 +33,6 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// Login a user
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -71,7 +65,6 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// Get all users (for task assignment)
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
@@ -85,10 +78,9 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Get the logged-in user's profile
 exports.getUserProfile = async (req, res) => {
   try {
-    const userId = req.user.id; // assuming JWT auth middleware adds this
+    const userId = req.user.id; 
     const user = await User.findByPk(userId, {
       attributes: ['id', 'name', 'email']
     });
