@@ -63,7 +63,7 @@ export interface TaskData {
     isMultiUser: boolean;
     creator: User;
     creatorId: number;
-    assignees: User[];
+    assignees: UserProfile[];
     createdAt: string;
     updatedAt: string;
   }
