@@ -23,7 +23,7 @@ const Home = () => {
 	return (
 		<div className="h-[100vh] grid grid-rows-12">
 			<Header user={user} />
-			<div className="row-span-10 grid grid-cols-12 bg-gray-300">
+			<div className="row-span-11 grid grid-cols-12 bg-gray-300">
 				<div className="flex flex-col px-2 col-span-2">
 					<CreateTask />
 					<span

@@ -11,6 +11,9 @@ exports.createTask = async (req, res, io) => {
     const isMultiUser = assigneeIds && assigneeIds.length > 1;
 
     const assignees = await User.findAll({ where: { id: assigneeIds } });
+    console.log("Assignees IDS:",assigneeIds);
+    console.log("Assignees:",assignees);
+    
     if (assignees.length !== assigneeIds.length) {
       return res.status(404).json({ message: 'One or more assignees not found' });
     }
@@ -25,9 +28,7 @@ exports.createTask = async (req, res, io) => {
       isMultiUser,
     });
 
-    if (isMultiUser) {
-      await newTask.setAssignees(assignees); 
-    }
+    await newTask.setAssignees(assignees); 
     
     io.emit('taskUpdate');
 
