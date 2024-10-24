@@ -4,7 +4,7 @@ import {
 	TaskDataWithRelationships,
 	UserProfile,
 } from "../../../interfaces/interfaces";
-import { updateTask, deleteTask, getAllUsers } from "../../../api"; 
+import { updateTask, deleteTask, getAllUsers } from "../../../api";
 import { jwtDecode } from "jwt-decode";
 
 interface TaskDetailProps {
@@ -15,8 +15,12 @@ interface TaskDetailProps {
 const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-  };
+		return date.toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+		});
+	};
 
 	const [formData, setFormData] = useState<TaskDataWithRelationships>({
 		id: task.id,
@@ -101,7 +105,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 			try {
 				await deleteTask(task.id.toString());
 				console.log("Task deleted");
-				onClose(); // Close the modal or perform any action after deletion
+				onClose();
 			} catch (error) {
 				console.error("Error deleting task:", error);
 			}
@@ -113,7 +117,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 			<div
 				className="fixed inset-0 bg-black/70 z-40"
 				onClick={onClose}></div>
-			<div className="bg-white rounded-lg shadow-lg p-5 max-w-lg w-full absolute z-50">
+			<div className="bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200 border border-slate-300/20 dark:shadow-2xl dark:shadow-slate-50/10 rounded-lg shadow-lg p-5 max-w-lg w-full absolute z-50">
 				<h2 className="text-xl font-bold mb-4">{task.name}</h2>
 
 				{isEditing ? (
@@ -123,20 +127,20 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 							<input
 								type="date"
 								name="dueDate"
-                defaultValue={formatDate(new Date(task.dueDate))}
+								defaultValue={formatDate(new Date(task.dueDate))}
 								onChange={handleChange}
-								className="border p-2 w-full"
+								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200"
 								required
 							/>
 						</div>
 
 						<div className="mb-4">
-							<label className="block mb-1">Priority</label>
+							<label className="block mb-1 ">Priority</label>
 							<select
 								name="priority"
 								value={formData.priority}
 								onChange={handleChange}
-								className="border p-2 w-full"
+								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200"
 								required>
 								<option value="low">Low</option>
 								<option value="medium">Medium</option>
@@ -145,12 +149,12 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 						</div>
 
 						<div className="mb-4">
-							<label className="block mb-1">Status</label>
+							<label className="block mb-1 ">Status</label>
 							<select
 								name="status"
 								value={formData.status}
 								onChange={handleChange}
-								className="border p-2 w-full"
+								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200"
 								required>
 								<option value="To Do">To Do</option>
 								<option value="In Progress">In Progress</option>
@@ -163,7 +167,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 							{loadingUsers ? (
 								<p>Loading users...</p>
 							) : (
-								<div className="border p-2 w-full">
+								<div className="border border-slate-900/20 dark:border-slate-300/20 h-20 overflow-scroll p-2 w-full">
 									{availableUsers.map((user) => (
 										<div
 											key={user.id}
@@ -215,7 +219,8 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 							<strong>Due Date:</strong> {formatDate(new Date(task.dueDate))}
 						</p>
 						<p className="mb-2">
-							<strong>Created At:</strong> {formatDate(new Date(task.createdAt))}
+							<strong>Created At:</strong>{" "}
+							{formatDate(new Date(task.createdAt))}
 						</p>
 						<p className="mb-2">
 							<strong>Creator:</strong> {task.creator.name}
@@ -230,29 +235,25 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 				)}
 
 				<div className="flex justify-end">
-					{isEditing ? (
-						<button
-							className="bg-blue-500 text-white px-3 py-2 rounded"
-							onClick={() => setIsEditing(false)}>
-							Cancel
-						</button>
-					) : (
-						<button
-							className="bg-green-500 text-white px-3 py-2 rounded"
-							onClick={() => setIsEditing(true)}>
-							Edit Task
-						</button>
+					{isEditing || (
+						<>
+							<button
+								className="bg-green-500 text-white px-3 py-2 rounded"
+								onClick={() => setIsEditing(true)}>
+								Edit Task
+							</button>
+							<button
+								className="bg-red-500 text-white px-3 py-2 rounded ml-2"
+								onClick={handleDelete}>
+								Delete Task
+							</button>
+							<button
+								className="bg-blue-500 text-white px-3 py-2 rounded ml-2"
+								onClick={onClose}>
+								Close
+							</button>
+						</>
 					)}
-					<button
-						className="bg-red-500 text-white px-3 py-2 rounded ml-2"
-						onClick={handleDelete}>
-						Delete Task
-					</button>
-					<button
-						className="bg-blue-500 text-white px-3 py-2 rounded ml-2"
-						onClick={onClose}>
-						Close
-					</button>
 				</div>
 			</div>
 		</div>
