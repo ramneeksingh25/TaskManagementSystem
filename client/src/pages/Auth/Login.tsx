@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
 import { loginUser } from "../../api"; // Import API to log in
 import { LoginDetails } from "../../interfaces/interfaces";
+import ThemeButton from "../ThemeButton";
 
 
 const Login = () => {
@@ -20,7 +21,9 @@ const Login = () => {
 			localStorage.setItem('token', token);
 			setMessage({ error: false, message: "Login successful!" });
 			reset();
-			navigate("/"); 
+			setTimeout(() => {
+				navigate("/"); 
+			}, 1000);
 		} catch (error: unknown) {
 			setMessage({
 				error: true,
@@ -38,11 +41,12 @@ const Login = () => {
 	}, []);
 
 	return (
-		<div className="bg-black h-screen w-screen grid place-items-center gap-0 text-white">
+		<div className="h-screen w-screen grid place-items-center gap-0 text-slate-900 dark:text-slate-100 select-none">
+			<ThemeButton/>
 			<form
-				className="row-span-2 bg-gray-300/10 px-20 py-12 flex flex-col items-center justify-center"
+				className="row-span-2 bg-slate-900/10 dark:bg-slate-300/10 px-20 py-12 flex flex-col items-center justify-center"
 				onSubmit={handleSubmit(onSubmit)}>
-				<label className="text-2xl font-bold mb-3">Login</label>
+				<label className="text-3xl font-bold mb-7 hover:text-blue-600 transition-colors duration-300">Login</label>
 
 				<div className="relative z-0 w-full mb-10 group">
 					<input

@@ -29,14 +29,13 @@ const ThemeProvider: React.FC<React.PropsWithChildren<unknown>> = ({
 	return (
 		<ThemeToggleContext.Provider value={{ theme, toggleTheme }}>
 			<div
-				className={`flex flex-col min-h-screen bg-gradient-to-tr from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 text-black dark:text-white`}>
+				className={`flex flex-col min-h-screen bg-gradient-to-tr from-blue-50 to-blue-200 dark:from-slate-950 dark:to-slate-900 text-black dark:text-white`}>
 				{children}
 			</div>
 		</ThemeToggleContext.Provider>
 	);
 };
 
-// Custom hook to use the theme toggle function
 export const useTheme = () => {
 	const context = useContext(ThemeToggleContext);
 	if (!context) {

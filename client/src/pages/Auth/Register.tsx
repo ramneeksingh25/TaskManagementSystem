@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
 import { loginUser, registerUser } from "../../api";
 import { RegisterDetails } from "../../interfaces/interfaces";
+import ThemeButton from "../ThemeButton";
 
 
 const Register = () => {
@@ -19,17 +20,17 @@ const Register = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const navigate = useNavigate();
-	// Handle registration and automatic login
 	const onSubmit = async (data: RegisterDetails) => {
 		setLoading(true);
 		try {
-			// Registration API call
 			const response = await registerUser(data);
 			if (response.data) {
 				setMessage({ error: false, message: "Registration successful!" });
 				const loginData = { email: data.email, password: data.password };
 				await loginUser(loginData);
-				navigate("/")
+				setTimeout(() => {
+					navigate("/"); 
+				}, 1000);
 			}
 			else {
 				setMessage({ error: true, message: "Registration failed. User already exists." });
@@ -53,13 +54,12 @@ const Register = () => {
 	},[])
 
 	return (
-		<div className="bg-black h-screen w-screen grid place-items-center gap-0 text-white">
+		<div className="h-screen w-screen grid place-items-center gap-0 text-slate-900 dark:text-slate-100 select-none">
+			<ThemeButton/>
 			<form
-				className="row-span-2 bg-gray-300/10 px-20 py-12 flex flex-col items-center justify-center"
+				className="row-span-2 bg-slate-900/10 dark:bg-slate-300/10 px-20 py-12 flex flex-col items-center justify-center"
 				onSubmit={handleSubmit(onSubmit)}>
-				<label className="text-2xl font-bold mb-3">Register</label>
-
-				{/* Name Input */}
+				<label className="text-3xl font-bold mb-7 hover:text-blue-400 transition-colors duration-300">Register</label>
 				<div className="relative z-0 w-full mb-10 group">
 					<input
 						type="text"
@@ -125,7 +125,6 @@ const Register = () => {
 					)}
 				</div>
 
-				{/* Confirm Password Input */}
 				<div className="relative z-0 w-full mb-10 group">
 					<input
 						type="password"
@@ -147,14 +146,12 @@ const Register = () => {
 					)}
 				</div>
 
-				{/* Response Message */}
 				{responseMessage.message && (
 					<p className={`${responseMessage.error ? "text-red-500" : "text-green-500"}`}>
 						{responseMessage.message}
 					</p>
 				)}
 
-				{/* Register Button */}
 				<button
 					type="submit"
 					className={buttonStyle}
@@ -164,7 +161,6 @@ const Register = () => {
 					</span>
 				</button>
 
-				{/* Login Link */}
 				<span className="text-center font-light">
 					Already have an account?{" "}
 					<Link to={"/signin"} className="font-bold">
