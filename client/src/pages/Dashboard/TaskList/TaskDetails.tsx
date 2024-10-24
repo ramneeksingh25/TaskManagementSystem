@@ -3,8 +3,9 @@ import {
 	Task,
 	TaskDataWithRelationships,
 	UserProfile,
-} from "../../../interfaces/interfaces"; // Assuming you have a User interface
-import { updateTask, deleteTask, getAllUsers } from "../../../api"; // Ensure deleteTask and getAllUsers are imported
+} from "../../../interfaces/interfaces";
+import { updateTask, deleteTask, getAllUsers } from "../../../api"; 
+import { jwtDecode } from "jwt-decode";
 
 interface TaskDetailProps {
 	task: Task;
@@ -13,16 +14,15 @@ interface TaskDetailProps {
 
 const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 	const [isEditing, setIsEditing] = useState(false);
-	const formatDate = (date: string | Date) => {
-		const formattedDate = typeof date === "string" ? new Date(date) : date;
-		return formattedDate.toLocaleDateString();
-	};
+	const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  };
 
 	const [formData, setFormData] = useState<TaskDataWithRelationships>({
 		id: task.id,
 		name: task.name,
 		description: task.description,
-		dueDate: new Date(formatDate(task.dueDate)),
+		dueDate: new Date(task.dueDate),
 		priority: task.priority,
 		isMultiUser: task.isMultiUser,
 		assignees: task.assignees,
@@ -34,6 +34,15 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 		const fetchUsers = async () => {
 			try {
 				const users = await getAllUsers();
+				const token = localStorage.getItem("token");
+				if (token) {
+					const decodedToken = jwtDecode<UserProfile>(token);
+					const currentUserId = decodedToken.id;
+					const filteredUsers = users.filter(
+						(user: UserProfile) => user.id !== currentUserId
+					);
+					setAvailableUsers(filteredUsers);
+				}
 				setAvailableUsers(users);
 			} catch (error) {
 				console.error("Error fetching users:", error);
@@ -114,7 +123,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 							<input
 								type="date"
 								name="dueDate"
-								value={formData.dueDate?.toDateString()}
+                defaultValue={formatDate(new Date(task.dueDate))}
 								onChange={handleChange}
 								className="border p-2 w-full"
 								required
@@ -203,10 +212,10 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 							<strong>Status:</strong> {task.status}
 						</p>
 						<p className="mb-2">
-							<strong>Due Date:</strong> {formatDate(task.dueDate)}
+							<strong>Due Date:</strong> {formatDate(new Date(task.dueDate))}
 						</p>
 						<p className="mb-2">
-							<strong>Created At:</strong> {formatDate(task.createdAt)}
+							<strong>Created At:</strong> {formatDate(new Date(task.createdAt))}
 						</p>
 						<p className="mb-2">
 							<strong>Creator:</strong> {task.creator.name}

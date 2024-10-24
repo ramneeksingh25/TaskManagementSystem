@@ -108,48 +108,55 @@ exports.getTaskById = async (req, res) => {
 };
 
 // Update task
-exports.updateTask = async (req, res,io) => {
+exports.updateTask = async (req, res, io) => {
   try {
     const taskId = req.params.id;
-    const { status, priority, dueDate, assigneeIds, isMultiUser } = req.body;
-    const userId = req.user.id; 
+    const { status, priority, dueDate, assignees, isMultiUser } = req.body;
+    
+    console.log(req.body);
 
     const task = await Task.findOne({
-      where: {
-        id: taskId,
-      }
+      where: { id: taskId },
     });
 
     if (!task) {
       return res.status(404).json({ message: 'Task not found or not authorized' });
     }
 
-
+    // Update task properties
     task.status = status || task.status;
     task.priority = priority || task.priority;
     task.dueDate = dueDate || task.dueDate;
     task.isMultiUser = isMultiUser || task.isMultiUser;
 
     console.log("TASK STATUS: " + task);
-    
 
     await task.save();
 
-    if (isMultiUser && assigneeIds && assigneeIds.length > 0) {
-      const assignees = await User.findAll({ where: { id: assigneeIds } });
-      if (assignees.length !== assigneeIds.length) {
-        return res.status(404).json({ message: 'One or more assignees not found' });
+    if (assignees && assignees.length > 0) {
+      // Extract assignee IDs from the array of objects
+      const assigneeIds = assignees.map(assignee => assignee.id);
+      
+      const assigneesFromDB = await User.findAll({ where: { id: assigneeIds } });
+  
+      if (assigneesFromDB.length !== assigneeIds.length) {
+        return res.status(404).json({ message: 'One or more assignees not found',error });
       }
-      await task.setAssignees(assignees);
+      
+      // Update the assignees for the task
+      await task.setAssignees(assigneesFromDB);
     }
 
+    console.log("UPDATED TASK", task);
 
+    // Emit socket event for task update
+    io.emit('taskUpdate', { taskId, task });
 
-    io.emit('taskUpdate');
-
+    // Respond with success message and updated task
     res.status(200).json({ message: 'Task updated successfully', task });
+
   } catch (error) {
-    console.error("Error updating task:", error); // Log the error
+    console.error("Error updating task:", error);
     res.status(500).json({ message: 'Error updating task', error });
   }
 };
