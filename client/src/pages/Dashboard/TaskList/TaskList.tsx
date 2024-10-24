@@ -28,12 +28,12 @@ const TaskList = ({ myTask }: TaskListProps) => {
     };
     fetchTasks();
   
-    socket.on('newTask', (newTask) => {
-      setTasks((prevTasks: Task[]) => [newTask, ...prevTasks]);
+    socket.on('taskUpdate', () => {
+      fetchTasks();
     });
   
     return () => {
-      socket.off('newTask');
+      socket.off('taskUpdate');
     };
   }, [myTask]);
   const handleSort = (sortField: keyof Task) => {

@@ -29,7 +29,7 @@ exports.createTask = async (req, res, io) => {
       await newTask.setAssignees(assignees); 
     }
     
-    io.emit('newTask', newTask);
+    io.emit('taskUpdate');
 
     res.status(201).json({ message: 'Task created successfully', task: newTask });
   } catch (error) {
@@ -108,16 +108,15 @@ exports.getTaskById = async (req, res) => {
 };
 
 // Update task
-exports.updateTask = async (req, res) => {
+exports.updateTask = async (req, res,io) => {
   try {
     const taskId = req.params.id;
     const { status, priority, dueDate, assigneeIds, isMultiUser } = req.body;
-    const userId = req.user.id; // Only the creator can update the task
+    const userId = req.user.id; 
 
     const task = await Task.findOne({
       where: {
         id: taskId,
-        creatorId: userId
       }
     });
 
@@ -125,10 +124,14 @@ exports.updateTask = async (req, res) => {
       return res.status(404).json({ message: 'Task not found or not authorized' });
     }
 
+
     task.status = status || task.status;
     task.priority = priority || task.priority;
     task.dueDate = dueDate || task.dueDate;
     task.isMultiUser = isMultiUser || task.isMultiUser;
+
+    console.log("TASK STATUS: " + task);
+    
 
     await task.save();
 
@@ -140,6 +143,10 @@ exports.updateTask = async (req, res) => {
       await task.setAssignees(assignees);
     }
 
+
+
+    io.emit('taskUpdate');
+
     res.status(200).json({ message: 'Task updated successfully', task });
   } catch (error) {
     console.error("Error updating task:", error); // Log the error
@@ -147,7 +154,7 @@ exports.updateTask = async (req, res) => {
   }
 };
 
-exports.deleteTask = async (req, res) => {
+exports.deleteTask = async (req, res,io) => {
   try {
     const taskId = req.params.id;
     const userId = req.user.id;
@@ -155,7 +162,6 @@ exports.deleteTask = async (req, res) => {
     const task = await Task.findOne({
       where: {
         id: taskId,
-        creatorId: userId
       }
     });
 
@@ -164,6 +170,8 @@ exports.deleteTask = async (req, res) => {
     }
 
     await task.destroy();
+    io.emit('taskUpdate');
+
     res.status(200).json({ message: 'Task deleted successfully' });
   } catch (error) {
     console.error("Error deleting task:", error);

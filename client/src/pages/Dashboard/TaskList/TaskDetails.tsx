@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Task, TaskData } from '../../../interfaces/interfaces';
-import { updateTask } from '../../../api';
-
+import { updateTask, deleteTask } from '../../../api'; // Ensure deleteTask is imported
 
 interface TaskDetailProps {
   task: Task;
@@ -36,6 +35,19 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+    if (confirmDelete) {
+      try {
+        await deleteTask(task.id.toString());
+        console.log("Task deleted");
+        onClose(); // Close the modal or perform any action after deletion
+      } catch (error) {
+        console.error("Error deleting task:", error);
+      }
+    }
+  };
+
   const formatDate = (date: string | Date) => {
     const formattedDate = typeof date === 'string' ? new Date(date) : date;
     return formattedDate.toLocaleDateString();
@@ -49,6 +61,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
         
         {isEditing ? (
           <form onSubmit={handleSubmit}>
+            {/* Form fields for editing */}
             <div className="mb-4">
               <label className="block mb-1">Task Name</label>
               <input
@@ -129,6 +142,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
           </form>
         ) : (
           <div className="mb-4">
+            {/* Display task details */}
             <p className="mb-2"><strong>Description:</strong> {task.description}</p>
             <p className="mb-2"><strong>Priority:</strong> {task.priority}</p>
             <p className="mb-2"><strong>Status:</strong> {task.status}</p>
@@ -149,6 +163,9 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
               Edit Task
             </button>
           )}
+          <button className="bg-red-500 text-white px-3 py-2 rounded ml-2" onClick={handleDelete}>
+            Delete Task
+          </button>
           <button className="bg-blue-500 text-white px-3 py-2 rounded ml-2" onClick={onClose}>
             Close
           </button>

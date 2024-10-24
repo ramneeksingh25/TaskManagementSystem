@@ -24,9 +24,13 @@ module.exports = (io) => {
 
 	router.get("/:id", authenticateJWT, taskController.getTaskById);
 
-	router.put("/:id", authenticateJWT, taskController.updateTask);
+	router.put("/:id", authenticateJWT, (req, res) =>
+		taskController.updateTask(req, res, io)
+	);
 
-	router.delete("/:id", authenticateJWT, taskController.deleteTask);
+	router.delete("/:id", authenticateJWT, (req, res) =>
+		taskController.deleteTask(req, res, io)
+	);
 
 	router.get(
 		"/admin/all-tasks",
