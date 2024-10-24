@@ -9,5 +9,5 @@ export const inputStyle = (error: FieldError|undefined) =>
 
 export const buttonStyle = "before:ease relative h-12 w-40 overflow-hidden border border-blue-500 bg-blue-500 text-white   transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:shadow-blue-500 hover:before:-translate-x-40 mb-5"
 
-export const logoutButtonStyle = "relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-blue-600 font-medium text-white shadow-2xl transition-all duration-300 before:absolute before:inset-0 before:border-0 before:border-red-500 before:duration-100 before:ease-linear hover:bg-white hover:shadow-blue-600 hover:before:border-[25px]"
+export const logoutButtonStyle = "relative flex rounded-xl h-full py-1 px-2 md:p-2 lg:py-3 lg:px-4 items-center justify-center overflow-hidden bg-blue-600 font-medium text-white shadow-md transition-all duration-300 before:absolute before:rounded-xl before:inset-0 before:border-0 before:border-red-500 before:duration-100 before:ease-linear hover:bg-white hover:shadow-blue-900 hover:before:border-[25px]"
 

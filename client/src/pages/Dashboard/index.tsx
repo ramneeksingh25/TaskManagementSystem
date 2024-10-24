@@ -7,6 +7,8 @@ import { useAuth } from "../../context/AuthContext";
 import { DecodedToken, UserProfile } from "../../interfaces/interfaces";
 import { MdAssignment } from "react-icons/md";
 import { FaTasks } from "react-icons/fa";
+import { IoFilter } from "react-icons/io5";
+import ThemeButton from "../ThemeButton";
 
 const Home = () => {
 	const { user, setUser } = useAuth();
@@ -14,7 +16,6 @@ const Home = () => {
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			const response = await getUserProfile();
-			console.log("Fetching user details:", response);
 			setUser(response);
 			return response;
 		};
@@ -23,31 +24,43 @@ const Home = () => {
 	return (
 		<div className="h-[100vh] grid grid-rows-12">
 			<Header user={user} />
-			<div className="row-span-11 grid grid-cols-12 bg-gray-300">
-				<div className="flex flex-col px-2 col-span-2">
-					<CreateTask />
-					<span
-						className="font-bold hover:underline cursor-pointer flex items-center justify-start gap-3 text-2xl"
-						onClick={() => {
-							setMyTask(true);
-						}}>
-						<FaTasks />
-						<span>My Tasks</span>
-					</span>
-					<span
-						className="font-bold hover:underline cursor-pointer flex items-center justify-start gap-3 text-2xl"
-						onClick={() => {
-							setMyTask(false);
-						}}>
-						<MdAssignment />
-						<span>Assigned Tasks</span>
-					</span>
+			<div className="row-span-11 grid grid-rows-12 px-0 md:px-6 lg:px-12 pt-2 bg-slate-300 dark:bg-slate-900 transition-colors duration-150">
+				<div className="rounded-none md:rounded-3xl px-1 md:px-6 lg:px-10 overflow-hidden grid grid-cols-2 bg-black/10 dark:bg-slate-700/90 border border-black/10 shadow-sm dark:border-slate-700/90 transition-all duration-150">
+					<div className="flex justify-start items-center gap-2 select-none">
+						<span
+							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition duration-150 ${
+								myTask ? "bg-slate-200 text-black hover:text-gray-800" : "text-black dark:text-white hover:bg-slate-400 dark:hover:text-slate-700"
+							}`}
+							onClick={() => {
+								setMyTask(true);
+							}}>
+							<FaTasks className="hidden md:block lg:block"/>
+							<span>My Tasks</span>
+						</span>
+						<span
+							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition duration-150 ${
+								myTask ? "text-black dark:text-white dark:hover:text-slate-700 hover:bg-slate-400" : "bg-slate-200 text-black hover:text-gray-800"
+							}`}
+							onClick={() => {
+								setMyTask(false);
+							}}>
+							<MdAssignment className="hidden md:block lg:block"/>
+							<span>Assigned Tasks</span>
+						</span>
+						<span
+							className={`text-sm md:text-base bg-gray-500 hover:text-gray-800 text-white hover:bg-gray-300 p-2 rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition duration-150`}>
+							<IoFilter />
+							<span className="hidden md:block lg:block">
+								Filter
+							</span>
+						</span>
+					</div>
+					<div className="flex items-center justify-end">
+						<CreateTask />
+					</div>
 				</div>
-				<div className="col-span-10 w-full overflow-scroll grid grid-rows-12 pb-3 pr-3">
-					<span className="font-extrabold text-2xl transition-all duration-300 flex items-center justify-center">
-						{myTask ? "My Tasks" : "Assigned Tasks"}
-					</span>
-					<div className="overflow-scroll row-span-11">
+				<div className="row-span-11 w-full overflow-scroll">
+					<div className="overflow-scroll h-full pb-3 px-0 md:px-6 lg:px-12 shadow-4xl">
 						<TaskList myTask={myTask} />
 					</div>
 				</div>
@@ -58,13 +71,13 @@ const Home = () => {
 
 const Header: React.FC<{ user: DecodedToken | UserProfile }> = ({ user }) => {
 	return (
-		<div className="bg-yellow-500 row-span-1 flex items-center justify-between px-32">
-			<h1 className="text-3xl font-bold">Task Manager</h1>
+		<div className="row-span-1 flex items-center justify-between px-4 md:px-6 lg:px-12 border border-b-2 border-slate-400 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 transition duration-150">
+			<h1 className="text-base md:text-3xl font-bold select-none"> Welcome, {" "}
+					{(user as UserProfile).name}!
+			</h1>
 			<div className="flex items-center">
-				<span className="text-gray-500 text-xs">
-					Logged in as {(user as UserProfile).name}{" "}
-				</span>
 				<Logout />
+				<ThemeButton/>
 			</div>
 		</div>
 	);

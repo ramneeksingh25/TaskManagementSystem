@@ -139,10 +139,8 @@ exports.updateTask = async (req, res, io) => {
       const assigneeIds = assignees.map(assignee => assignee.id);
       
       const assigneesFromDB = await User.findAll({ where: { id: assigneeIds } });
-  
-      if (assigneesFromDB.length !== assigneeIds.length) {
-        return res.status(404).json({ message: 'One or more assignees not found',error });
-      }
+      
+      console.log("assignees from DB: " , assigneesFromDB);
       
       // Update the assignees for the task
       await task.setAssignees(assigneesFromDB);
@@ -158,7 +156,7 @@ exports.updateTask = async (req, res, io) => {
 
   } catch (error) {
     console.error("Error updating task:", error);
-    res.status(500).json({ message: 'Error updating task', error });
+    res.status(500).json({ message: 'Error updating task',error });
   }
 };
 

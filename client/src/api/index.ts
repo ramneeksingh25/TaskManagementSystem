@@ -2,7 +2,6 @@
 import axios, { AxiosError } from 'axios';
 
 import { LoginDetails, RegisterDetails, TaskData, TaskDataWithRelationships } from '../interfaces/interfaces';
-import { useNavigate } from 'react-router-dom';
 
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
@@ -160,7 +159,7 @@ export const updateTask = async (taskId: string, updatedData: TaskData) => {
   } catch (error: AxiosError | unknown) {
     if (axios.isAxiosError(error)) {
       if (error.response && error.response.data.message) {
-        throw new Error(error.response.data.message);
+        throw new Error("Internal Server Error");
       } else {
         throw new Error('Failed to update task.');
       }

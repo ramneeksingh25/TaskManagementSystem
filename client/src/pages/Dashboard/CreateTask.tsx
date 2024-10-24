@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createTask, getAllUsers } from "../../api";
-import { buttonStyle } from "../Auth/formStyles";
 import { jwtDecode } from "jwt-decode";
+import { IoIosAddCircle } from "react-icons/io";
 
 const CreateTask = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
@@ -9,18 +9,18 @@ const CreateTask = () => {
 	return (
 		<>
 			<div
-				className={buttonStyle}
-				onClick={() => setDialogOpen(true)}
-			>
-				<span className="relative z-10"></span>
-				Create Task
+				className={""}
+				onClick={() => setDialogOpen(true)}>
+				<span className="relative z-10 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-[0.4] md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer flex items-center justify-start gap-3 transition duration-150">
+					<IoIosAddCircle className="text-2xl"/>
+					<span className="hidden md:block lg:block">Create Task</span>
+				</span>
 			</div>
 			{dialogOpen && (
 				<>
 					<div
 						className="absolute h-screen w-screen bg-black/70 top-0 left-0 z-30"
-						onClick={() => setDialogOpen(false)}
-					></div>
+						onClick={() => setDialogOpen(false)}></div>
 					<div className="absolute bg-white border-black z-40 w-[50vw] -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 p-4 rounded-lg shadow-lg">
 						<NewTaskForm onClose={() => setDialogOpen(false)} />
 					</div>
@@ -52,26 +52,32 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 
 	useEffect(() => {
 		const fetchUsers = async () => {
-		  try {
-			const response = await getAllUsers();
-			const token = localStorage.getItem("token"); 			
-			if (token) {
-			  const decodedToken = jwtDecode<User>(token);
-			  const currentUserId = decodedToken.id;
-			  const filteredUsers = response.filter((user:User) => user.id !== currentUserId);
-			  setUsers(filteredUsers);
+			try {
+				const response = await getAllUsers();
+				const token = localStorage.getItem("token");
+				if (token) {
+					const decodedToken = jwtDecode<User>(token);
+					const currentUserId = decodedToken.id;
+					const filteredUsers = response.filter(
+						(user: User) => user.id !== currentUserId
+					);
+					setUsers(filteredUsers);
+				}
+			} catch (error) {
+				console.error("Error fetching users:", error);
+			} finally {
+				setLoading(false);
 			}
-		  } catch (error) {
-			console.error("Error fetching users:", error);
-		  } finally {
-			setLoading(false);
-		  }
 		};
-	
-		fetchUsers();
-	  }, []);
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+		fetchUsers();
+	}, []);
+
+	const handleInputChange = (
+		e: React.ChangeEvent<
+			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+		>
+	) => {
 		const { name, value } = e.target;
 		setTaskData((prevData) => ({ ...prevData, [name]: value }));
 	};
@@ -88,7 +94,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const createdTask = { ...taskData, dueDate: new Date(taskData.dueDate) }
+		const createdTask = { ...taskData, dueDate: new Date(taskData.dueDate) };
 		console.log(createdTask);
 		await createTask(createdTask);
 		onClose();
@@ -114,8 +120,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 					name="description"
 					className="border p-2 w-full"
 					value={taskData.description}
-					onChange={handleInputChange}
-				></textarea>
+					onChange={handleInputChange}></textarea>
 			</div>
 			<div className="mb-4">
 				<label className="block mb-1">Due Date</label>
@@ -133,8 +138,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 					name="priority"
 					className="border p-2 w-full"
 					value={taskData.priority}
-					onChange={handleInputChange}
-				>
+					onChange={handleInputChange}>
 					<option value="Low">Low</option>
 					<option value="Medium">Medium</option>
 					<option value="High">High</option>
@@ -147,7 +151,9 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 				) : (
 					<div className="border p-2 w-full">
 						{users.map((user) => (
-							<div key={user.id} className="flex items-center mb-2">
+							<div
+								key={user.id}
+								className="flex items-center mb-2">
 								<input
 									type="checkbox"
 									id={`user-${user.id}`}
@@ -163,10 +169,15 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 				)}
 			</div>
 			<div className="flex justify-end">
-				<button type="button" className="mr-4 bg-gray-500 text-white px-3 py-2 rounded" onClick={onClose}>
+				<button
+					type="button"
+					className="mr-4 bg-gray-500 text-white px-3 py-2 rounded"
+					onClick={onClose}>
 					Cancel
 				</button>
-				<button type="submit" className="bg-blue-500 text-white px-3 py-2 rounded">
+				<button
+					type="submit"
+					className="bg-blue-500 text-white px-3 py-2 rounded">
 					Create Task
 				</button>
 			</div>
