@@ -25,11 +25,11 @@ const Home = () => {
 		<div className="h-[100vh] grid grid-rows-12">
 			<Header user={user} />
 			<div className="row-span-11 grid grid-rows-12 px-0 md:px-6 lg:px-12 pt-2 bg-slate-300 dark:bg-slate-900 transition-colors duration-150">
-				<div className="rounded-none md:rounded-3xl px-1 md:px-6 lg:px-10 overflow-hidden grid grid-cols-2 bg-black/10 dark:bg-slate-700/90 border border-black/10 shadow-sm dark:border-slate-700/90 transition-all duration-150">
+				<div className="rounded-none md:rounded-3xl px-3 md:px-6 lg:px-10 overflow-hidden grid grid-cols-2 bg-stone-900/5 dark:bg-stone-950/40 border border-black/20 shadow-sm dark:border-slate-700/90 transition-all duration-150">
 					<div className="flex justify-start items-center gap-2 select-none">
 						<span
-							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition duration-150 ${
-								myTask ? "bg-slate-200 text-black hover:text-gray-800" : "text-black dark:text-white hover:bg-slate-400 dark:hover:text-slate-700"
+							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl hover:shadow-gray-900 shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition-all duration-300 ${
+								myTask ? "bg-slate-200 text-blue-700 hover:text-blue-800 hover:shadow-inner" : "text-blue-900 dark:text-white hover:bg-slate-400/20 dark:hover:text-blue-400 shadow-none hover:shadow-md"
 							}`}
 							onClick={() => {
 								setMyTask(true);
@@ -38,8 +38,8 @@ const Home = () => {
 							<span>My Tasks</span>
 						</span>
 						<span
-							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition duration-150 ${
-								myTask ? "text-black dark:text-white dark:hover:text-slate-700 hover:bg-slate-400" : "bg-slate-200 text-black hover:text-gray-800"
+							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl  hover:shadow-gray-900 shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition-all duration-300 ${
+								myTask ? "text-blue-900 dark:text-white dark:hover:text-blue-400 hover:bg-slate-400/20 shadow-none hover:shadow-md" : "bg-slate-200 text-blue-600 hover:text-blue-800 hover:shadow-inner"
 							}`}
 							onClick={() => {
 								setMyTask(false);
@@ -48,7 +48,7 @@ const Home = () => {
 							<span>Assigned Tasks</span>
 						</span>
 						<span
-							className={`text-sm md:text-base bg-gray-500 hover:text-gray-800 text-white hover:bg-gray-300 p-2 rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition duration-150`}>
+							className={"relative z-10 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-[0.4] md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer flex items-center justify-start gap-3 transition duration-150"}>
 							<IoFilter />
 							<span className="hidden md:block lg:block">
 								Filter

@@ -129,7 +129,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 								name="dueDate"
 								defaultValue={formatDate(new Date(task.dueDate))}
 								onChange={handleChange}
-								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200"
+								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
 								required
 							/>
 						</div>
@@ -140,7 +140,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 								name="priority"
 								value={formData.priority}
 								onChange={handleChange}
-								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200"
+								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
 								required>
 								<option value="low">Low</option>
 								<option value="medium">Medium</option>
@@ -154,7 +154,7 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 								name="status"
 								value={formData.status}
 								onChange={handleChange}
-								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200"
+								className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
 								required>
 								<option value="To Do">To Do</option>
 								<option value="In Progress">In Progress</option>
@@ -167,7 +167,8 @@ const TaskDetail: React.FC<TaskDetailProps> = ({ task, onClose }) => {
 							{loadingUsers ? (
 								<p>Loading users...</p>
 							) : (
-								<div className="border border-slate-900/20 dark:border-slate-300/20 h-20 overflow-scroll p-2 w-full">
+								<div className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200 
+							h-20 overflow-scroll">
 									{availableUsers.map((user) => (
 										<div
 											key={user.id}
