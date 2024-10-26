@@ -16,15 +16,12 @@ const CreateTask = () => {
 				<IoIosAddCircle className="text-2xl" />
 				<span className="hidden md:block lg:block">Create Task</span>
 			</span>
-			{dialogOpen ? (
-				<NewTaskForm
-					onClose={() => {
-						setDialogOpen(!dialogOpen);
-					}}
-				/>
-			) : (
-				<></>
-			)}
+			<NewTaskForm
+				onClose={() => {
+					setDialogOpen(false);
+				}}
+				dialogOpen={dialogOpen}
+			/>
 		</>
 	);
 };
@@ -36,9 +33,10 @@ interface User {
 
 interface NewTaskFormProps {
 	onClose: () => void;
+	dialogOpen: boolean;
 }
 
-const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
+const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose, dialogOpen }) => {
 	const [taskData, setTaskData] = useState({
 		name: "",
 		description: "",
@@ -100,13 +98,19 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 	};
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center z-40">
+		<div
+			className={`absolute inset-0 flex items-center justify-center 
+				${
+				dialogOpen ? "z-40" :"-z-40"
+			} 
+			}`} >
+				<div className="fixed inset-0 bg-black/30" onClick={onClose}/>
 			<div
-				className="fixed inset-0 bg-black/70 dark:bg-slate-300/10 z-40"
-				onClick={onClose}></div>
-			<div className="bg-slate-200 text-slate-900 dark:bg-slate-900 dark:text-slate-200 border border-slate-300/20 dark:shadow-2xl dark:shadow-slate-50/10 rounded-lg shadow-lg p-5 max-w-lg w-full absolute z-50">
-				<form onSubmit={handleSubmit}>
-					<h2 className="text-xl font-bold mb-4">Create New Task</h2>
+				className={`bg-slate-200 text-slate-900 dark:bg-slate-900 dark:text-slate-200 border border-r-0 rounded-r-none border-slate-300/20 dark:shadow-2xl dark:shadow-slate-50/10 rounded-lg shadow-lg p-5 fixed z-50 h-full w-1/2 duration-500 transform transition-transform ${
+					dialogOpen ? "translate-x-0 right-0" : "translate-x-full right-0"
+				}`}>
+				<form onSubmit={handleSubmit} className="flex flex-col justify-center h-full">
+					<h2 className="text-3xl font-bold mb-4">Create New Task</h2>
 					<div className="mb-4">
 						<label className="block mb-1">Task Name</label>
 						<input
@@ -153,10 +157,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 						{loading ? (
 							<p>Loading users...</p>
 						) : (
-							<div
-								className="border border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200 
-							h-20 overflow-scroll
-							">
+							<div className="border border-slate-900/20 dark:border-slate-300/20 p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200 h-[20vh] overflow-scroll">
 								{users.map((user) => (
 									<div
 										key={user.id}
