@@ -194,7 +194,6 @@ exports.getAllTasks = async (req, res) => {
         { model: User, as: 'assignees', attributes: ['name', 'email'] } 
       ]
     });
-
     res.status(200).json({ tasks });
   } catch (error) {
     console.error("Error fetching tasks:", error); // Log the error

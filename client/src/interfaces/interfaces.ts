@@ -27,6 +27,7 @@ export interface DecodedToken {
 	iat: number;  
 	id: number;
 	role: string;
+  name: string;
   }
 
 export interface TaskData {

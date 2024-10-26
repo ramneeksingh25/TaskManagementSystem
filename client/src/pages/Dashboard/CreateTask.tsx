@@ -8,19 +8,23 @@ const CreateTask = () => {
 
 	return (
 		<>
-				<span className={"relative z-10 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-[0.4] md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer flex items-center justify-start gap-3 transition duration-150"} onClick={() => setDialogOpen(true)}>
-					<IoIosAddCircle className="text-2xl" />
-					<span className="hidden md:block lg:block">Create Task</span>
-				</span>
-				{dialogOpen ? (
-					<NewTaskForm
-						onClose={() => {
-							setDialogOpen(!dialogOpen);
-						}}
-					/>
-				) : (
-					<></>
-				)}
+			<span
+				className={
+					"relative z-10 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-[0.4] md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer flex items-center justify-start gap-3 transition duration-150"
+				}
+				onClick={() => setDialogOpen(true)}>
+				<IoIosAddCircle className="text-2xl" />
+				<span className="hidden md:block lg:block">Create Task</span>
+			</span>
+			{dialogOpen ? (
+				<NewTaskForm
+					onClose={() => {
+						setDialogOpen(!dialogOpen);
+					}}
+				/>
+			) : (
+				<></>
+			)}
 		</>
 	);
 };
@@ -98,9 +102,9 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 	return (
 		<div className="fixed inset-0 flex items-center justify-center z-40">
 			<div
-				className="fixed inset-0 bg-black/70 z-40"
+				className="fixed inset-0 bg-black/70 dark:bg-slate-300/10 z-40"
 				onClick={onClose}></div>
-			<div className="bg-slate-300 text-slate-950 dark:bg-slate-950 dark:text-slate-200 border border-slate-300/20 dark:shadow-2xl dark:shadow-slate-50/10 rounded-lg shadow-lg p-5 max-w-lg w-full absolute z-50">
+			<div className="bg-slate-200 text-slate-900 dark:bg-slate-900 dark:text-slate-200 border border-slate-300/20 dark:shadow-2xl dark:shadow-slate-50/10 rounded-lg shadow-lg p-5 max-w-lg w-full absolute z-50">
 				<form onSubmit={handleSubmit}>
 					<h2 className="text-xl font-bold mb-4">Create New Task</h2>
 					<div className="mb-4">
@@ -108,7 +112,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 						<input
 							type="text"
 							name="name"
-							className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
+							className="border border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
 							value={taskData.name}
 							onChange={handleInputChange}
 							required
@@ -118,7 +122,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 						<label className="block mb-1">Description</label>
 						<textarea
 							name="description"
-							className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
+							className="border border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
 							value={taskData.description}
 							onChange={handleInputChange}></textarea>
 					</div>
@@ -127,7 +131,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 						<input
 							type="date"
 							name="dueDate"
-							className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
+							className="border border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
 							value={taskData.dueDate}
 							onChange={handleInputChange}
 						/>
@@ -136,7 +140,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 						<label className="block mb-1">Priority</label>
 						<select
 							name="priority"
-							className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
+							className="border border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200"
 							value={taskData.priority}
 							onChange={handleInputChange}>
 							<option value="Low">Low</option>
@@ -149,7 +153,8 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onClose }) => {
 						{loading ? (
 							<p>Loading users...</p>
 						) : (
-							<div className="border-b border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200 
+							<div
+								className="border border-slate-900/20 dark:border-slate-300/20  p-2 w-full bg-slate-300 text-slate-950 dark:bg-slate-800 dark:text-slate-200 
 							h-20 overflow-scroll
 							">
 								{users.map((user) => (

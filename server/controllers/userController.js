@@ -36,31 +36,22 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log("LOGIN Attempt:", { email }); // Log the email for debugging
-    
-    // Check if user exists
+    console.log("LOGIN Attempt:", { email }); 
     const user = await User.findOne({ where: { email } });
     if (!user) {
       console.log("User not found");
       return res.status(400).json({ message: 'Invalid email or password' });
     }
-
-    // Compare the password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       console.log("Invalid password");
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    console.log("JWTJWTJWT:",JWT_SECRET);
-    
-    // Generate JWT token
-    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
-    console.log("Generated Token:", token); // Log the generated token for debugging
-
+    const token = jwt.sign({ id: user.id, role: user.role,name:user.name }, JWT_SECRET, { expiresIn: '1d' });
     res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
-    console.error("Error logging in:", error); // Log the error
+    console.error("Error logging in:", error);
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
@@ -82,7 +73,7 @@ exports.getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id; 
     const user = await User.findByPk(userId, {
-      attributes: ['id', 'name', 'email']
+      attributes: ['id', 'name', 'email','role']
     });
     res.status(200).json({ user });
   } catch (error) {

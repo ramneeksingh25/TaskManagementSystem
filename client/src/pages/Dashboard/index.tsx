@@ -12,11 +12,12 @@ import ThemeButton from "../ThemeButton";
 
 const Home = () => {
 	const { user, setUser } = useAuth();
-	const [myTask, setMyTask] = useState(true);
+	const [myTask, setMyTask] = useState(1);
+
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			const response = await getUserProfile();
-			setUser(response);
+			setUser({...user,...response});
 			return response;
 		};
 		fetchUserDetails();
@@ -29,30 +30,49 @@ const Home = () => {
 					<div className="flex justify-start items-center gap-2 select-none">
 						<span
 							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl hover:shadow-gray-900 shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition-all duration-300 ${
-								myTask ? "bg-slate-200 text-blue-700 hover:text-blue-800 hover:shadow-inner" : "text-blue-900 dark:text-white hover:bg-slate-400/20 dark:hover:text-blue-400 shadow-none hover:shadow-md"
+								myTask == 1
+									? "bg-slate-200 text-blue-700 hover:text-blue-800 hover:shadow-inner"
+									: "text-blue-900 dark:text-white hover:bg-slate-400/20 dark:hover:text-blue-400 shadow-none hover:shadow-md"
 							}`}
 							onClick={() => {
-								setMyTask(true);
+								setMyTask(1);
 							}}>
-							<FaTasks className="hidden md:block lg:block"/>
+							<FaTasks className="hidden md:block lg:block" />
 							<span>My Tasks</span>
 						</span>
 						<span
 							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl  hover:shadow-gray-900 shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition-all duration-300 ${
-								myTask ? "text-blue-900 dark:text-white dark:hover:text-blue-400 hover:bg-slate-400/20 shadow-none hover:shadow-md" : "bg-slate-200 text-blue-600 hover:text-blue-800 hover:shadow-inner"
+								myTask == 2
+									? "bg-slate-200 text-blue-600 hover:text-blue-800 hover:shadow-inner"
+									: "text-blue-900 dark:text-white dark:hover:text-blue-400 hover:bg-slate-400/20 shadow-none hover:shadow-md"
 							}`}
 							onClick={() => {
-								setMyTask(false);
+								setMyTask(2);
 							}}>
-							<MdAssignment className="hidden md:block lg:block"/>
+							<MdAssignment className="hidden md:block lg:block" />
 							<span>Assigned Tasks</span>
 						</span>
-						<span
-							className={"relative z-10 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-[0.4] md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer flex items-center justify-start gap-3 transition duration-150"}>
-							<IoFilter />
-							<span className="hidden md:block lg:block">
-								Filter
+						{
+							(user as DecodedToken).role=="admin" &&
+							<span
+								className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl  hover:shadow-gray-900 shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition-all duration-300 ${
+									myTask == 3
+										? "bg-slate-200 text-blue-600 hover:text-blue-800 hover:shadow-inner"
+										: "text-blue-900 dark:text-white dark:hover:text-blue-400 hover:bg-slate-400/20 shadow-none hover:shadow-md"
+								}`}
+								onClick={() => {
+									setMyTask(3);
+								}}>
+								<MdAssignment className="hidden md:block lg:block" />
+								<span>View All Tasks</span>
 							</span>
+						}
+						<span
+							className={
+								"relative z-10 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-[0.4] md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer flex items-center justify-start gap-3 transition duration-150"
+							}>
+							<IoFilter />
+							<span className="hidden md:block lg:block">Filter</span>
 						</span>
 					</div>
 					<div className="flex items-center justify-end">
@@ -72,12 +92,12 @@ const Home = () => {
 const Header: React.FC<{ user: DecodedToken | UserProfile }> = ({ user }) => {
 	return (
 		<div className="row-span-1 flex items-center justify-between px-4 md:px-6 lg:px-12 border border-b-2 border-slate-400 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 transition duration-150">
-			<h1 className="text-base md:text-3xl font-bold select-none"> Welcome, {" "}
-					{(user as UserProfile).name}!
+			<h1 className="text-base md:text-3xl font-bold select-none">
+				Welcome, {user.name}!
 			</h1>
 			<div className="flex items-center">
 				<Logout />
-				<ThemeButton/>
+				<ThemeButton />
 			</div>
 		</div>
 	);

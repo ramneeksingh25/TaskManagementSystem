@@ -186,19 +186,19 @@ export const deleteTask = async (taskId:string) => {
   }
 };
 
-// export const getTaskById = async (taskId:string) => {
-//   try {
-//     const response = await apiClient.get(`/tasks/${taskId}`);
-//     return response.data.task;
-//   } catch (error: AxiosError | unknown) {
-//     if (axios.isAxiosError(error)) {
-//       if (error.response && error.response.data.message) {
-//         throw new Error(error.response.data.message);
-//       } else {
-//         throw new Error('Failed to fetch task details.');
-//       }
-//     } else {
-//       throw new Error('An unknown error occurred.');
-//     }
-//   }
-// };
+export const getAllTasks = async () => {
+  try {
+    const response = await apiClient.get(`/tasks/admin/all-tasks`);
+    return response.data.tasks;
+  } catch (error: AxiosError | unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error('Failed to fetch task details.');
+      }
+    } else {
+      throw new Error('An unknown error occurred.');
+    }
+  }
+};

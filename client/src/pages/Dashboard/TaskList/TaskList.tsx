@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getTasksByUser, getTasksForUser } from "../../../api";
+import { getAllTasks, getTasksByUser, getTasksForUser } from "../../../api";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import TaskItem from "./TaskItem";
 import { io } from "socket.io-client";
 import { Task } from "../../../interfaces/interfaces";
 interface TaskListProps {
-	myTask: boolean;
+	myTask: number;
 }
 
 const socket = io("http://localhost:2000");
@@ -19,9 +19,18 @@ const TaskList = ({ myTask }: TaskListProps) => {
 		const fetchTasks = async () => {
 			setSortBy("");
 			try {
-				const response = myTask
-					? await getTasksForUser()
-					: await getTasksByUser();
+				const responseFunc =()=>{
+					if(myTask==1){
+                        return getTasksForUser()
+                    }
+                    if(myTask==2){
+                        return getTasksByUser()
+                    }
+                    return getAllTasks()
+				}
+				const response = await responseFunc();
+				console.log(response);
+				
 				setTasks(response);
 			} catch (error) {
 				console.error("Error fetching tasks:", error);
@@ -39,15 +48,20 @@ const TaskList = ({ myTask }: TaskListProps) => {
 	}, [myTask]);
 
 	const handleSort = (sortField: keyof Task) => {
-		const sortableFields: (keyof Task)[] = ["name", "priority", "status", "dueDate"];
-	
+		const sortableFields: (keyof Task)[] = [
+			"name",
+			"priority",
+			"status",
+			"dueDate",
+		];
+
 		if (!sortableFields.includes(sortField)) return;
-	
+
 		const isSameField = sortBy === sortField;
 		const direction = isSameField && sortDirection === "asc" ? "desc" : "asc";
 		setSortBy(sortField);
 		setSortDirection(direction);
-	
+
 		const sortedTasks = [...tasks].sort((a, b) => {
 			const aValue = a[sortField];
 			const bValue = b[sortField];
@@ -55,22 +69,22 @@ const TaskList = ({ myTask }: TaskListProps) => {
 				const priorityOrder = ["high", "medium", "low"];
 				const aPriority = (aValue as string).toLowerCase();
 				const bPriority = (bValue as string).toLowerCase();
-	
+
 				const aIndex = priorityOrder.indexOf(aPriority);
 				const bIndex = priorityOrder.indexOf(bPriority);
-	
+
 				if (aIndex < bIndex) return direction === "asc" ? -1 : 1;
 				if (aIndex > bIndex) return direction === "asc" ? 1 : -1;
 				return 0;
 			}
-	
+
 			if (aValue < bValue) return direction === "asc" ? -1 : 1;
 			if (aValue > bValue) return direction === "asc" ? 1 : -1;
 			return 0;
 		});
-	
+
 		setTasks(sortedTasks);
-	};	
+	};
 
 	const getArrow = (field: string) => {
 		if (sortBy === field) {
@@ -92,7 +106,7 @@ const TaskList = ({ myTask }: TaskListProps) => {
 
 	return (
 		<div className="relative h-full">
-			{tasks.length !== 0 ? (
+			{tasks?.length !== 0 ? (
 				<>
 					<div className="font-extrabold uppercase text-white bg-blue-600/80 dark:bg-blue-500/80 text-[12px] md:text-sm lg:text-base transition-all duration-150 sticky top-0 w-full grid grid-cols-7 md:grid-cols-10 p-4 items-center z-10">
 						{[
@@ -124,7 +138,7 @@ const TaskList = ({ myTask }: TaskListProps) => {
 					</div>
 
 					<div className="overflow-y-auto">
-						{tasks.map((task, index) => (
+						{tasks?.map((task, index) => (
 							<div key={index}>
 								<TaskItem task={task} />
 							</div>
