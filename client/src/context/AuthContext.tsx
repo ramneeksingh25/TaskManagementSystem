@@ -14,6 +14,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<DecodedToken|UserProfile>({
+		name:"",
 		exp: 0,
 		iat: 0,
 		id: 0,
