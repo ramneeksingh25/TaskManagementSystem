@@ -47,11 +47,18 @@ export interface TaskData {
       name: string;
       email: string;
     };
-    assignees?: Array<{
+    assignees?: Assignee[]
+  }
+
+  export interface Assignee {
       id: number;
       name: string;
       email: string;
-    }>;
+      UserTask: UserTask;
+  }
+  export interface UserTask {
+    userId: number;
+    taskId: number;
   }
 
   export interface Task {
@@ -64,7 +71,7 @@ export interface TaskData {
     isMultiUser: boolean;
     creator: User;
     creatorId: number;
-    assignees: UserProfile[];
+    assignees: Assignee[];
     createdAt: string;
     updatedAt: string;
   }

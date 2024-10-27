@@ -12,3 +12,13 @@ export const buttonStyle =
 
 export const logoutButtonStyle =
 	"relative flex rounded-xl h-full py-1 px-2 md:p-2 lg:py-3 lg:px-4 items-center justify-center overflow-hidden bg-blue-600 font-medium text-white shadow-md transition-all duration-300 before:absolute before:rounded-xl before:inset-0 before:border-0 before:border-red-500 before:duration-100 before:ease-linear hover:bg-white hover:shadow-blue-900 hover:before:border-[25px]";
+
+export const menuButtonStyleGreen =
+	`text-green-500 hover:before:bg-green-500 border-green-500 relative h-fit mx-3 overflow-hidden border border-green-500 
+	bg-green-500/10 px-3 text-green-500 shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-green-500 before:transition-all before:duration-500 hover:text-white hover:shadow-green-500 hover:before:left-0 hover:before:w-full`
+export const menuButtonStyleRed =
+	`text-red-500 hover:before:bg-red-500 border-red-500 relative h-fit mx-3 overflow-hidden border border-red-500 
+	bg-red-500/10 px-3 text-green-500 shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-red-500 before:transition-all before:duration-500 hover:text-white hover:shadow-red-500 hover:before:left-0 hover:before:w-full`
+export const menuButtonStyleBlue =
+	`text-blue-500 hover:before:bg-blue-500 border-blue-500 relative h-fit mx-3 overflow-hidden border border-blue-500 
+	bg-blue-500/10 px-3 text-blue-500 shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-blue-500 before:transition-all before:duration-500 hover:text-white hover:shadow-blue-500 hover:before:left-0 hover:before:w-full`

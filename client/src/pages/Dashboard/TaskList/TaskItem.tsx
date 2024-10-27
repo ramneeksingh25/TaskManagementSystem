@@ -9,7 +9,6 @@ interface TaskItemProps {
 const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 	const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-	// Ensure task properties are defined
 	const formatDate = (date: string | Date) => {
 		return date ? new Date(date).toLocaleDateString() : "N/A";
 	};
@@ -68,13 +67,11 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             : "No Assignees"}
         </span>
       </div>
-  
-      {isDetailOpen && (
         <TaskDetail
           task={task}
           onClose={closeDetailModal}
+          isDetailOpen={isDetailOpen}
         />
-      )}
     </div>
   );
 };

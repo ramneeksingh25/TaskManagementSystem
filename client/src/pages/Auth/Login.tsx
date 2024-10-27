@@ -10,7 +10,7 @@ import ThemeButton from "../ThemeButton";
 const Login = () => {
 	const { register, handleSubmit, formState: { errors }, reset } = useForm<LoginDetails>();
 	const [responseMessage, setMessage] = useState({ error: false, message: "" });
-	const [loading, setLoading] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 	const navigate = useNavigate();
 
 	const onSubmit = async (data: LoginDetails) => {
@@ -21,6 +21,7 @@ const Login = () => {
 			localStorage.setItem('token', token);
 			setMessage({ error: false, message: "Login successful!" });
 			reset();
+			setLoading(true)
 			setTimeout(() => {
 				navigate("/"); 
 			}, 1000);
