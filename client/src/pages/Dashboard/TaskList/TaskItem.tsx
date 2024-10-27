@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Task } from "../../../interfaces/interfaces";
+import { Task } from "../../../utils/interfaces";
 import TaskDetail from "./TaskDetails";
 
 interface TaskItemProps {
@@ -38,7 +38,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
         </span>
         <span className="cursor-default select-none text-ellipsis overflow-hidden">
           <span
-            className={`text-center rounded-full px-3 py-1 ${
+            className={`text-center rounded-full px-1 md:px-3 py-1 ${
               task.priority.toLowerCase() == "low"
                 ? "bg-green-500/50 "
                 : task.priority.toLowerCase()=="high"?"bg-red-500/50":"bg-yellow-500/50"

@@ -3,17 +3,23 @@ import { getAllTasks, getTasksByUser, getTasksForUser } from "../../../api";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import TaskItem from "./TaskItem";
 import { io } from "socket.io-client";
-import { Task } from "../../../interfaces/interfaces";
+import { Task } from "../../../utils/interfaces";
 interface TaskListProps {
 	myTask: number;
+	filter: {
+		status: string;
+        priority: string;
+        dueDate: string;
+	}
 }
 
 const socket = io("http://localhost:2000");
 
-const TaskList = ({ myTask }: TaskListProps) => {
+const TaskList = ({ myTask,filter }: TaskListProps) => {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [sortBy, setSortBy] = useState<string>("");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+	const [tasksFromDB,setTasksFromDB]=useState<Task[]>([]);
 
 	useEffect(() => {
 		const fetchTasks = async () => {
@@ -31,6 +37,7 @@ const TaskList = ({ myTask }: TaskListProps) => {
 				const response = await responseFunc();
 				console.log(response);
 				
+				setTasksFromDB(response);
 				setTasks(response);
 			} catch (error) {
 				console.error("Error fetching tasks:", error);
@@ -103,12 +110,26 @@ const TaskList = ({ myTask }: TaskListProps) => {
 		Creator: "creator",
 		Assignees: "assignees",
 	};
+	useEffect(() => {
+		let filteredTasks: Task[] = [...tasksFromDB];
+		if (filter.status) {
+			filteredTasks = filteredTasks.filter(task => task.status.toLowerCase() === filter.status.toLowerCase());
+		}
+		if (filter.priority) {
+			filteredTasks = filteredTasks.filter(task => task.priority.toLowerCase() === filter.priority.toLowerCase());
+		}
+		if (filter.dueDate) {
+			const dueDate = new Date(filter.dueDate);
+			filteredTasks = filteredTasks.filter(task => new Date(task.dueDate) <= dueDate);
+		}
+		setTasks(filteredTasks);
+	}, [filter, tasksFromDB]);
 
 	return (
 		<div className="relative h-full">
 			{tasks?.length !== 0 ? (
 				<>
-					<div className="font-extrabold uppercase text-white bg-blue-600/80 dark:bg-blue-500/80 text-[12px] md:text-sm lg:text-base transition-all duration-150 sticky top-0 w-full grid grid-cols-7 md:grid-cols-10 p-4 items-center z-10">
+					<div className="font-extrabold uppercase text-white bg-blue-600/80 dark:bg-blue-500/80 text-[12px] md:text-sm lg:text-base transition-all duration-150 sticky top-0 w-full grid grid-cols-7 md:grid-cols-10 items-center z-10">
 						{[
 							{ label: "Name", key: "name" },
 							{ label: "Description", key: "description" },
@@ -130,7 +151,7 @@ const TaskList = ({ myTask }: TaskListProps) => {
 										: "cursor-default"
 								}  
 								${["Creator", "Assignees"].includes(label) ? "hidden sm:block" : ""}
-								flex items-center gap-2 text-ellipsis overflow-hidden`}
+								flex items-center py-4 px-1 gap-2 text-ellipsis overflow-hidden`}
 								onClick={() => handleSort(sortFieldMapping[label])}>
 								{label} {getArrow(key)}
 							</span>

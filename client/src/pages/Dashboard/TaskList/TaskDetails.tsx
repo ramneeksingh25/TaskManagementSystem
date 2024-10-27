@@ -3,7 +3,7 @@ import {
 	Task,
 	TaskDataWithRelationships,
 	UserProfile,
-} from "../../../interfaces/interfaces";
+} from "../../../utils/interfaces";
 import { updateTask, deleteTask, getAllUsers } from "../../../api";
 import { jwtDecode } from "jwt-decode";
 import { IoExitOutline } from "react-icons/io5";
@@ -11,7 +11,7 @@ import {
 	menuButtonStyleBlue,
 	menuButtonStyleGreen,
 	menuButtonStyleRed,
-} from "../../Auth/formStyles";
+} from "../../../utils/formStyles";
 import { MdCancel, MdDelete, MdEdit, MdKeyboardReturn } from "react-icons/md";
 
 interface TaskDetailProps {
@@ -349,7 +349,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({
 									type="checkbox"
 									id={`user-${user.id}`}
 									value={user.id}
-									defaultChecked={formData.assignees?.some(
+									checked={formData.assignees?.some(
 										(assignee) => assignee.id === user.id
 									) || formData.assignees?.some(
 										(assignee) => assignee.UserTask?.userId === user.id

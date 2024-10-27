@@ -4,29 +4,55 @@ import CreateTask from "./CreateTask";
 import TaskList from "./TaskList/TaskList";
 import { getUserProfile } from "../../api";
 import { useAuth } from "../../context/AuthContext";
-import { DecodedToken, UserProfile } from "../../interfaces/interfaces";
-import { MdAssignment } from "react-icons/md";
+import { DecodedToken, UserProfile } from "../../utils/interfaces";
+import { MdAssignment, MdFilter1, MdFilter2, MdFilter3 } from "react-icons/md";
 import { FaTasks } from "react-icons/fa";
 import { IoFilter } from "react-icons/io5";
 import ThemeButton from "../ThemeButton";
+import FilterMenu from "./TaskList/FilterMenu";
 
 const Home = () => {
 	const { user, setUser } = useAuth();
 	const [myTask, setMyTask] = useState(1);
+	const [filterMenu, setFilterMenu] = useState(false);
+	const [filter,setFilter]=useState({ priority: "", status: "", dueDate: "" });
+	const [filterCount,setFilterCount] = useState(0);
 
+	const closeFilterMenu = () => {
+		setFilterMenu(false);
+	};
 	useEffect(() => {
 		const fetchUserDetails = async () => {
 			const response = await getUserProfile();
-			setUser({...user,...response});
+			setUser({ ...user, ...response });
 			return response;
 		};
 		fetchUserDetails();
 	}, [setUser]);
+	useEffect(()=>{
+		let count=0;
+        if(filter.priority) count++;
+        if(filter.status) count++;
+        if(filter.dueDate) count++;
+        setFilterCount(count);
+	},[filter])
+	const renderFilterIcon = () => {
+        switch (filterCount) {
+            case 1:
+                return <MdFilter1 />;
+            case 2:
+                return <MdFilter2 />;
+            case 3:
+                return <MdFilter3 />;
+            default:
+                return <IoFilter />;
+        }
+    };
 	return (
 		<div className="h-[100vh] grid grid-rows-12">
 			<Header user={user} />
 			<div className="row-span-11 grid grid-rows-12 px-0 md:px-6 lg:px-12 pt-2 bg-slate-300 dark:bg-slate-900 transition-colors duration-150">
-				<div className="rounded-none md:rounded-3xl px-3 md:px-6 lg:px-10 overflow-hidden grid grid-cols-2 bg-stone-900/5 dark:bg-stone-950/40 border border-black/20 shadow-sm dark:border-slate-700/90 transition-all duration-150">
+				<div className="rounded-none md:rounded-3xl px-3 md:px-6 lg:px-10 grid grid-cols-2 bg-stone-900/5 dark:bg-stone-950/40 border border-black/20 shadow-sm dark:border-slate-700/90 transition-all duration-150">
 					<div className="flex justify-start items-center gap-2 select-none">
 						<span
 							className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl hover:shadow-gray-900 shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition-all duration-300 ${
@@ -52,8 +78,7 @@ const Home = () => {
 							<MdAssignment className="hidden md:block lg:block" />
 							<span>Assigned Tasks</span>
 						</span>
-						{
-							(user as DecodedToken).role=="admin" &&
+						{(user as DecodedToken).role == "admin" && (
 							<span
 								className={`text-sm md:text-base p-1 md:p-2 lg:p-3 rounded-xl  hover:shadow-gray-900 shadow-gray-600 font-bold  cursor-pointer flex items-center justify-start gap-3 transition-all duration-300 ${
 									myTask == 3
@@ -66,13 +91,20 @@ const Home = () => {
 								<MdAssignment className="hidden md:block lg:block" />
 								<span>View All Tasks</span>
 							</span>
-						}
+						)}
 						<span
 							className={
-								"relative z-10 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-[0.4] md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer flex items-center justify-start gap-3 transition duration-150"
+								"relative z-20 text-sm md:text-base bg-blue-600 hover:text-blue-800 text-white hover:bg-slate-100 p-1 md:p-2 md:px-3 sm:rounded-full rounded-3xl shadow hover:shadow-gray-900 hover:shadow-md shadow-gray-600 cursor-pointer transition duration-150"
 							}>
-							<IoFilter />
-							<span className="hidden md:block lg:block">Filter</span>
+							<span
+								className="flex items-center justify-start gap-3"
+								onClick={() => {
+									setFilterMenu(!filterMenu);
+								}}>
+								{renderFilterIcon()}
+								<span className="hidden md:block lg:block">Filter</span>
+							</span>
+							{filterMenu && <FilterMenu onClose={closeFilterMenu} setFilter={setFilter} filter={filter}/>}
 						</span>
 					</div>
 					<div className="flex items-center justify-end">
@@ -81,7 +113,7 @@ const Home = () => {
 				</div>
 				<div className="row-span-11 w-full overflow-scroll">
 					<div className="overflow-scroll h-full pb-3 px-0 md:px-6 lg:px-12 shadow-4xl">
-						<TaskList myTask={myTask} />
+						<TaskList myTask={myTask} filter={filter}/>
 					</div>
 				</div>
 			</div>

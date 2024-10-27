@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
+import { buttonStyle, inputStyle, labelStyle } from "../../utils/formStyles";
 import { loginUser, registerUser } from "../../api";
-import { RegisterDetails } from "../../interfaces/interfaces";
+import { RegisterDetails } from "../../utils/interfaces";
 import ThemeButton from "../ThemeButton";
 
 

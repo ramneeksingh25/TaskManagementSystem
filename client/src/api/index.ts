@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios, { AxiosError } from 'axios';
 
-import { LoginDetails, RegisterDetails, TaskData, TaskDataWithRelationships } from '../interfaces/interfaces';
+import { LoginDetails, RegisterDetails, TaskData, TaskDataWithRelationships } from '../utils/interfaces';
 
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;

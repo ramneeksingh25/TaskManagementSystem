@@ -1,16 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { buttonStyle, inputStyle, labelStyle } from "./formStyles";
+import { buttonStyle, inputStyle, labelStyle } from "../../utils/formStyles";
 import { loginUser } from "../../api"; // Import API to log in
-import { LoginDetails } from "../../interfaces/interfaces";
+import { LoginDetails } from "../../utils/interfaces";
 import ThemeButton from "../ThemeButton";
 
 
 const Login = () => {
 	const { register, handleSubmit, formState: { errors }, reset } = useForm<LoginDetails>();
 	const [responseMessage, setMessage] = useState({ error: false, message: "" });
-	const [loading, setLoading] = useState<boolean>(true);
+	const [loading, setLoading] = useState<boolean>(false);
 	const navigate = useNavigate();
 
 	const onSubmit = async (data: LoginDetails) => {
@@ -24,14 +24,13 @@ const Login = () => {
 			setLoading(true)
 			setTimeout(() => {
 				navigate("/"); 
-			}, 1000);
+			}, 700);
 		} catch (error: unknown) {
+			setLoading(false);
 			setMessage({
 				error: true,
 				message: (error as Error)?.message || "Login failed. Please try again.",
 			});
-		} finally {
-			setLoading(false);
 		}
 	};
 	useEffect(() => {

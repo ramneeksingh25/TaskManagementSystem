@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { logoutButtonStyle } from "./formStyles";
+import { logoutButtonStyle } from "../../utils/formStyles";
 import { HiOutlineLogout } from "react-icons/hi";
 
 const Logout = () => {
