@@ -13,7 +13,8 @@ interface TaskListProps {
 	}
 }
 
-const socket = io(import.meta.env.VITE_SOCKET_URL);
+const API_URL = import.meta.env.VITE_SOCKET_URL
+const socket = io(API_URL);
 
 const TaskList = ({ myTask,filter }: TaskListProps) => {
 	const [tasks, setTasks] = useState<Task[]>([]);
@@ -35,8 +36,6 @@ const TaskList = ({ myTask,filter }: TaskListProps) => {
                     return getAllTasks()
 				}
 				const response = await responseFunc();
-				console.log(response);
-				
 				setTasksFromDB(response);
 				setTasks(response);
 			} catch (error) {
