@@ -13,7 +13,7 @@ interface TaskListProps {
 	}
 }
 
-const socket = io("http://localhost:2000");
+const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 const TaskList = ({ myTask,filter }: TaskListProps) => {
 	const [tasks, setTasks] = useState<Task[]>([]);
