@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = (models) => {
-    // Ensure models.Task is correctly defined
     User.hasMany(models.Task, { foreignKey: "creatorId", as: "createdTasks" });
     User.belongsToMany(models.Task, { through: models.UserTask, foreignKey: 'userId', as: 'assignedTasks' });
   };

@@ -1,4 +1,3 @@
-const { io } = require('../index');
 const db = require('../models');
 const User = db.User;
 const Task = db.Task;
@@ -135,23 +134,17 @@ exports.updateTask = async (req, res, io) => {
     await task.save();
 
     if (assignees && assignees.length > 0) {
-      // Extract assignee IDs from the array of objects
       const assigneeIds = assignees.map(assignee => assignee.id);
       
       const assigneesFromDB = await User.findAll({ where: { id: assigneeIds } });
       
-      console.log("assignees from DB: " , assigneesFromDB);
-      
-      // Update the assignees for the task
       await task.setAssignees(assigneesFromDB);
     }
 
     console.log("UPDATED TASK", task);
 
-    // Emit socket event for task update
     io.emit('taskUpdate', { taskId, task });
 
-    // Respond with success message and updated task
     res.status(200).json({ message: 'Task updated successfully', task });
 
   } catch (error) {

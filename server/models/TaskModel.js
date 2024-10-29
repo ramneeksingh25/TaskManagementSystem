@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     isMultiUser: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false, // Single-user task by default
+      defaultValue: false, 
     },
     creatorId: {
       type: DataTypes.INTEGER,
@@ -36,8 +36,6 @@ module.exports = (sequelize, DataTypes) => {
   // Associations
   Task.associate = (models) => {
     Task.belongsTo(models.User, { foreignKey: 'creatorId', as: 'creator' });
-    
-    // Many-to-many relationship for multi-user tasks
     Task.belongsToMany(models.User, { through: models.UserTask, foreignKey: 'taskId', as: 'assignees' });
   };
 

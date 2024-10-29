@@ -29,9 +29,8 @@ db.sequelize = sequelize;
 
 db.User = require("./UserModel.js")(sequelize, DataTypes);
 db.Task = require("./TaskModel.js")(sequelize, DataTypes);
-db.UserTask = require("./UserTask.js")(sequelize, DataTypes); // New join table
+db.UserTask = require("./UserTask.js")(sequelize, DataTypes);
 
-// Set up associations
 db.User.associate(db);
 db.Task.associate(db);
 
